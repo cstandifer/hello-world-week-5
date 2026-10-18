@@ -52,6 +52,24 @@ transparency from last week's homework, and that's what the sunbeam uses.
 > same. Job 3 adds the code that lets the light change it. To see the idea now,
 > change `this.anger = 0;` in `frank.js` to `1` or `-1`.
 
+## Job 3: light becomes mood
+
+**map().** Makes sense! It stretches the light (0 to 1023) onto his mood (0.8 to -1).
+Around 800 he's already content, which is good because you don't have to push the
+slider all the way over.
+
+**lerp().** This is great. I hate snapping animation, so this is a good one to
+remember. I changed the speed to 0.5 to really see the difference.
+
+> Clarified: at 0.5 he covers half the remaining distance every frame, so he gets
+> there in a few frames, close to a snap. Smaller numbers make him slower to change
+> his mind (0.03 takes about a second, 0.005 takes several).
+
+**Question for later:** how well will the photoresistor work?
+
+> To check in job 5: real sensors rarely use the full 0 to 1023. We'll read its actual
+> lowest and highest values in the room and use those in `map()` instead.
+
 ## Words that aren't p5
 
 `class`, `constructor`, `new`, and `this` are JavaScript, not p5, so most of them
