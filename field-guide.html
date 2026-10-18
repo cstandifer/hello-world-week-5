@@ -176,6 +176,11 @@ td.say { color: var(--muted); font-style: italic; }
 .checklist li { counter-increment: c; display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 10px; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
 .checklist li::before { content: counter(c); font-family: var(--mono); font-weight: 600; color: var(--frank-ink); }
 .checklist p { font-size: 15.5px; }
+.mynote { border: 1.5px dashed var(--frank); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; background: var(--sheet); max-width: 760px; }
+.mylabel { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--frank-ink); font-weight: 600; }
+.mynote p { font-size: 16px; }
+.mynote .clar { color: var(--muted); font-size: 15px; }
+.mynote .clar span { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); margin-right: 4px; }
 .talk { display: grid; gap: 10px; counter-reset: t; padding: 0; margin: 0; list-style: none; }
 .talk li { background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; max-width: 72ch; }
 
@@ -209,7 +214,7 @@ html { scroll-behavior: smooth; }
       <h1>How Frank works</h1>
       <p class="lede">A study guide for <code>frank.js</code>: what every part does, in plain words, so you can explain him in class without memorizing the math.</p>
       <p>The Frank on the right runs the real code from your sketch. Drag the light to change his mood. Switch off a body part to see which method draws it. Turn on <em>his frame</em> to see the point everything is measured from.</p>
-      <p class="muted">The light slider here already behaves like job 3, so you can see where you're headed.</p>
+      <p class="muted">The dashed boxes marked <em>My note</em> are mine, written as I worked through this, with a clarification underneath when I had something slightly off.</p>
     </div>
     <div class="stage-card">
       <div id="stage" aria-label="Live Frank sketch"></div>
@@ -275,6 +280,16 @@ frank.display();</pre>
         <p>Wipe the canvas, set the light, draw the sun, then ask Frank to change his numbers and draw himself.</p>
       </div>
     </div>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>The draw example on the p5 reference is a mouse click. But I understand alpha and transparency from last week's homework, which I think we're using here.</p>
+        <p class="clar"><span>Clarified</span> Yes. The reference example is just one demo; what matters is that <code>draw()</code> runs over and over. The sunbeam's <code>fill(250, 199, 117, alpha)</code> uses the fourth number for transparency, and <code>map()</code> turns the light strength into that alpha.</p>
+    </aside>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p><code>frank.update</code> and <code>frank.display</code> come from the Frank file?</p>
+        <p class="clar"><span>Clarified</span> Yes. They're methods written inside the <code>Frank</code> class in <code>frank.js</code>, and <code>sketch.js</code> calls them on its Frank every frame.</p>
+    </aside>
   </section>
 
   <section id="words">
@@ -299,6 +314,21 @@ frank.display();</pre>
     <div class="note sun">
       <p><strong>Capital vs lowercase.</strong> <code>Frank</code> is the class (the recipe in <code>frank.js</code>). <code>frank</code> is the one actual Frank, stored in a variable in <code>sketch.js</code>. Same idea as <code>Creature</code> and <code>blob</code> in the class demo.</p>
     </div>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>Frank with a capital F comes from the <code>frank.js</code> file. We rename him <code>frank</code> with a lowercase f because we're taking a copy from <code>frank.js</code> and giving new attributes to a Frank on this sketch.</p>
+        <p class="clar"><span>Clarified</span> Close. <code>frank</code> isn't a copy with new attributes added. He's one Frank built from the recipe, and he gets exactly the starting properties the constructor gives every Frank. The sketch only hands him 190 and 360, which say where he stands. ("Properties" is the word for his attributes.)</p>
+    </aside>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>So he's the same Frank, just with a new position.</p>
+        <p class="clar"><span>Clarified</span> Exactly.</p>
+    </aside>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>Same goes for Sunbeam? And <code>lightSlider</code> is new?</p>
+        <p class="clar"><span>Clarified</span> Yes for Sunbeam: <code>Sunbeam</code> is the class and <code>sun</code> is the one sunbeam. It lives at the bottom of <code>sketch.js</code>, not in <code>frank.js</code>. <code>lightSlider</code> is new, but it isn't a class. <code>createSlider()</code> is a p5 function (on the reference under DOM) that makes a slider, and <code>lightSlider</code> holds it.</p>
+    </aside>
   </section>
 
   <section id="properties">
@@ -459,6 +489,11 @@ endClip();</pre>
   <span class="k">this</span>.anger = lerp(<span class="k">this</span>.anger, targetAnger, 0.03);</pre>
       <p>Plus <code>frank.update(sun.strength)</code> in <code>sketch.js</code>. That's the code the live Frank above is running.</p>
     </div>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>I see anger and annoyed in this guide. Why doesn't my sketch make him change? Is it because we need to get to job 3?</p>
+        <p class="clar"><span>Clarified</span> Yes. Before job 3, <code>this.anger</code> started at 0 and nothing changed it, so he looked the same. Job 3 is what lets the light change it.</p>
+    </aside>
   </section>
 
   <section id="job3">
@@ -506,6 +541,11 @@ endClip();</pre>
       </table>
     </div>
     <p class="muted">Why 0.8 and not 1? In total darkness he's grumpy, not furious. Change it to 1 if you want a crankier Frank.</p>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p><code>map</code> makes sense! The 800 is good too, so you don't have to go all the way over on the slider.</p>
+    </aside>
+
     <h3>Step 2: <code>lerp()</code> eases him there</h3>
     <p>If his anger jumped straight to the target, his face would snap. Instead, every frame he moves 3% of the remaining distance. Here's the slider jumping from dark to full sun, with his anger starting at 0:</p>
     <div class="table-scroll">
@@ -526,6 +566,17 @@ endClip();</pre>
       <h3>Try it: his personality is one number</h3>
       <p>The <code>0.03</code> is how quickly he changes his mind. Try <code>0.2</code> and he reacts almost instantly, like an eager pet. Try <code>0.005</code> and he takes ages to come around, which is very Frank.</p>
     </div>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p><code>lerp</code>! This is great. I hate when I see snapping animation, so this is a good one to remember. I changed it to 0.5 to really see the difference, then kept 0.03.</p>
+        <p class="clar"><span>Clarified</span> At 0.5 he covers half the remaining distance every frame, so he gets there in a few frames, close to a snap.</p>
+    </aside>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>I wonder how well the photoresistor works when we get there.</p>
+        <p class="clar"><span>Clarified</span> Good instinct. Real sensors rarely use the full 0 to 1023, so in job 5 we log its actual darkest and brightest readings, then use those in <code>map()</code>.</p>
+    </aside>
+
   </section>
 
   <section id="job5">
@@ -630,6 +681,7 @@ endClip();</pre>
       <li><p><strong>Close the Serial Monitor and Plotter</strong> when you're done. Only one program can listen to the Arduino at a time, and in job 6 that will be p5.</p></li>
     </ol>
     <h3>Reading log</h3>
+    <p class="muted">This answers my question from job 3 about how well the photoresistor will work.</p>
     <div class="table-scroll">
       <table>
         <thead><tr><th>Condition</th><th>Reading</th><th>What it's for</th></tr></thead>
