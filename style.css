@@ -6,6 +6,8 @@ html, body {
 body {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   align-items: center;
   justify-content: center;
   background: #f4f4f4;
