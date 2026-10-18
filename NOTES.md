@@ -3,7 +3,10 @@
 Notes I'm keeping as I learn how this sketch works. Each one is my understanding,
 with a short clarification underneath where I had something slightly off.
 
-Study guide with a live Frank: Frank's Field Guide (Claude artifact).
+**[Frank's Field Guide](field-guide.html)** is a study guide I made with Claude to break
+down how Frank's code works, part by part, with a live Frank you can take apart. I asked
+for it because I wanted to understand the code I was turning in, not just have it work.
+These notes are what I took away from it as I went.
 
 ## Classes
 

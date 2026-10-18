@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Frank's Field Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a lab notebook. A live specimen up top, then numbered sections that follow
+   the order you'd explain Frank in class, each one a short note plus a table or snippet. */
+:root {
+  --paper: #F5F7F4;
+  --sheet: #FFFFFF;
+  --ink: #1D2421;
+  --muted: #5B6863;
+  --line: #DCE2DE;
+  --frank: #B23F39;
+  --frank-ink: #7A2420;
+  --sun: #F3C064;
+  --sun-wash: #FBEFD5;
+  --code-bg: #EDF1EE;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #131715; --sheet: #1A1F1C; --ink: #E7ECE9; --muted: #9AA8A2; --line: #2B3330;
+    --frank: #E2726B; --frank-ink: #F3A8A2; --sun: #E8B55A; --sun-wash: #2C2616; --code-bg: #202723;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #131715; --sheet: #1A1F1C; --ink: #E7ECE9; --muted: #9AA8A2; --line: #2B3330;
+  --frank: #E2726B; --frank-ink: #F3A8A2; --sun: #E8B55A; --sun-wash: #2C2616; --code-bg: #202723;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 1040px; margin: 0 auto; }
+
+nav.toc {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  display: flex; gap: 6px; overflow-x: auto; padding-block: 10px;
+  scrollbar-width: none;
+}
+nav.toc a {
+  flex: none; font-family: var(--mono); font-size: 13px; color: var(--muted);
+  text-decoration: none; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line);
+}
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--frank-ink); border-color: var(--frank); outline: none; }
+
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(36px, 6vw, 56px); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: clamp(26px, 3.4vw, 32px); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 19px; font-weight: 500; }
+p { margin: 0; max-width: 65ch; }
+.muted { color: var(--muted); }
+code, pre { font-family: var(--mono); font-size: 14px; }
+:not(pre) > code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
+pre {
+  background: var(--code-bg); border-radius: 10px; padding: 14px 16px; margin: 0;
+  overflow-x: auto; line-height: 1.55;
+}
+pre .c { color: var(--muted); }
+pre .k { color: var(--frank-ink); font-weight: 600; }
+
+/* hero */
+.hero {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  gap: 40px; align-items: start; padding-block: 40px 24px;
+}
+.hero-text { display: grid; gap: 18px; min-width: 0; }
+.eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--frank-ink); }
+.lede { font-size: 19px; }
+.stage-card { background: var(--sheet); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: grid; gap: 12px; min-width: 0; }
+#stage { width: 100%; aspect-ratio: 1; max-width: 100%; border-radius: 10px; overflow: hidden; background: #fff; }
+#stage canvas { width: 100% !important; height: auto !important; display: block; }
+.controls { display: grid; gap: 10px; }
+.slider-row { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; font-size: 15px; }
+.slider-row input { width: 100%; accent-color: var(--frank); }
+.readout { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px; }
+.toggles label {
+  font-family: var(--mono); font-size: 13px; display: inline-flex; gap: 6px; align-items: center;
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; user-select: none;
+}
+.toggles input { accent-color: var(--frank); margin: 0; }
+.toggles label:has(input:focus-visible) { outline: 2px solid var(--frank); outline-offset: 1px; }
+.toggles .frame-toggle { border-style: dashed; }
+
+/* sections */
+section { padding-block: 48px 8px; border-top: 1px solid var(--line); display: grid; gap: 18px; scroll-margin-top: 64px; }
+section > header { display: grid; gap: 8px; }
+.num { font-family: var(--mono); font-size: 13px; color: var(--frank-ink); letter-spacing: 0.06em; }
+
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--sheet); }
+table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); }
+td code { white-space: nowrap; }
+td.say { color: var(--muted); font-style: italic; }
+
+/* load order flow */
+.flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+.chip {
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+  display: grid; gap: 2px; min-width: 0; flex: 1 1 180px;
+}
+.chip strong { font-family: var(--mono); font-size: 14.5px; }
+.chip span { font-size: 14.5px; color: var(--muted); }
+.chip.hot { border-color: var(--frank); }
+.arrow { align-self: center; color: var(--muted); font-family: var(--mono); }
+
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.note { background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+.note.sun { background: var(--sun-wash); border-color: transparent; }
+
+.translate { display: grid; gap: 14px; }
+.pair { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 14px; align-items: start; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.pair h3 { grid-column: 1 / -1; }
+.pair p { font-size: 15.5px; }
+
+.progress { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; padding-block: 0 32px; }
+.step { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: grid; gap: 2px; min-width: 0; background: var(--sheet); }
+.step b { font-family: var(--mono); font-size: 12px; color: var(--muted); font-weight: 600; }
+.step span { font-size: 13.5px; line-height: 1.3; }
+.step.done { border-color: transparent; background: var(--code-bg); }
+.step.done b { color: var(--frank-ink); }
+.step.now { border-color: var(--frank); }
+@media (max-width: 820px) { .progress { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .progress { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.bbwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--sheet); padding: 8px; }
+.bb { display: block; width: 100%; min-width: 620px; height: auto; font-family: var(--mono); }
+.bb .board { fill: #F2F0EA; stroke: #CFCAC0; }
+.bb .gap { fill: #E4E0D6; }
+.bb .gaplabel { font-size: 11px; fill: #6E6A60; text-anchor: middle; }
+.bb .hole { fill: #B9B4A8; }
+.bb .bbnum { font-size: 11px; fill: #6E6A60; text-anchor: middle; }
+.bb .bblet { font-size: 11px; fill: #6E6A60; text-anchor: middle; }
+.bb .rail { font-size: 15px; font-weight: 600; text-anchor: middle; }
+.bb .rail.plus { fill: #D93A32; } .bb .rail.minus { fill: #2F6FD0; }
+.bb .colhint { fill: #F3C064; opacity: .28; }
+.bb .used { fill: none; stroke: #1E1E1E; stroke-width: 1.5; }
+.bb .leg { stroke: #8A8A8A; stroke-width: 2; }
+.bb .ldr { fill: #E9DCC0; stroke: #8A6A3A; stroke-width: 1.5; }
+.bb .ldrsq { fill: none; stroke: #B0472E; stroke-width: 1.5; }
+.bb .res { fill: #E8D3A8; stroke: #9C8456; }
+.bb .w { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.bb .w.red { stroke: #D93A32; } .bb .w.blk { stroke: #1E1E1E; } .bb .w.yel { stroke: #E2B91E; }
+.bb .call { font-size: 11px; fill: #3A372F; text-anchor: middle; }
+.bb .uno { fill: #0F6E80; }
+.bb .pin { fill: #1E1E1E; stroke: #6FB6C2; }
+.bb .pinlab { font-size: 12px; font-weight: 600; fill: #FFFFFF; text-anchor: middle; }
+.bb .pingroup { font-size: 11px; fill: #CDE8EC; text-anchor: middle; }
+.bb .unotitle { font-size: 12px; fill: #FFFFFF; text-anchor: middle; }
+.swatch { display: inline-block; width: 22px; height: 6px; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+.checklist { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: c; }
+.checklist li { counter-increment: c; display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 10px; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.checklist li::before { content: counter(c); font-family: var(--mono); font-weight: 600; color: var(--frank-ink); }
+.checklist p { font-size: 15.5px; }
+.talk { display: grid; gap: 10px; counter-reset: t; padding: 0; margin: 0; list-style: none; }
+.talk li { background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; max-width: 72ch; }
+
+@media (max-width: 820px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 28px 16px; }
+  .two, .pair { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="toc" aria-label="Sections">
+    <a href="#specimen">Live Frank</a>
+    <a href="#files">1 Files</a>
+    <a href="#words">2 Class words</a>
+    <a href="#properties">3 His numbers</a>
+    <a href="#placing">4 Placing him</a>
+    <a href="#parts">5 Body parts</a>
+    <a href="#tricks">6 Scary bits</a>
+    <a href="#anger">7 The mood dial</a>
+    <a href="#job3">Job 3</a>
+    <a href="#job5">Job 5 · Lab</a>
+    <a href="#say">8 In class</a>
+  </nav>
+
+  <div class="hero" id="specimen">
+    <div class="hero-text">
+      <div class="eyebrow">hello-world-week-5 · field guide</div>
+      <h1>How Frank works</h1>
+      <p class="lede">A study guide for <code>frank.js</code>: what every part does, in plain words, so you can explain him in class without memorizing the math.</p>
+      <p>The Frank on the right runs the real code from your sketch. Drag the light to change his mood. Switch off a body part to see which method draws it. Turn on <em>his frame</em> to see the point everything is measured from.</p>
+      <p class="muted">The light slider here already behaves like job 3, so you can see where you're headed.</p>
+    </div>
+    <div class="stage-card">
+      <div id="stage" aria-label="Live Frank sketch"></div>
+      <div class="controls">
+        <div class="slider-row">
+          <label for="light">Light</label>
+          <input id="light" type="range" min="0" max="1023" value="300">
+        </div>
+        <div class="readout" id="readout">light 300 · target anger 0.27 · anger 0.27</div>
+        <div class="toggles" role="group" aria-label="Body parts">
+          <label><input type="checkbox" id="t-legs" checked> drawLegs</label>
+          <label><input type="checkbox" id="t-spikes" checked> drawSpikes</label>
+          <label><input type="checkbox" id="t-hair" checked> drawHair</label>
+          <label><input type="checkbox" id="t-body" checked> bodyOutline</label>
+          <label><input type="checkbox" id="t-belly" checked> drawBelly</label>
+          <label><input type="checkbox" id="t-scales" checked> drawScales</label>
+          <label><input type="checkbox" id="t-face" checked> drawFace</label>
+          <label class="frame-toggle"><input type="checkbox" id="t-frame"> his frame</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress" aria-label="Job progress">
+    <div class="step done"><b>JOB 1 · DONE</b><span>Frank on white</span></div>
+    <div class="step done"><b>JOB 2 · DONE</b><span>The sunbeam</span></div>
+    <div class="step done"><b>JOB 3 · DONE</b><span>Mood follows light</span></div>
+    <div class="step done"><b>JOB 4 · SKIPPED</b><span>Frank remembers</span></div>
+    <div class="step now"><b>JOB 5 · NEXT</b><span>Wire the photoresistor</span></div>
+    <div class="step"><b>JOB 6</b><span>p5 hears the Arduino</span></div>
+    <div class="step"><b>JOB 7</b><span>README</span></div>
+  </div>
+
+  <section id="files">
+    <header>
+      <div class="num">1 · THE BIG PICTURE</div>
+      <h2>Two files, one Frank</h2>
+      <p>When you press play, <code>index.html</code> loads three scripts in order. The order matters: Frank has to be described before the sketch can make one.</p>
+    </header>
+    <div class="flow">
+      <div class="chip"><strong>p5 library</strong><span>Teaches the browser p5 words like <code>ellipse()</code></span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip hot"><strong>frank.js</strong><span>Describes Frank: the class</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip"><strong>sketch.js</strong><span>Makes Frank and runs the show</span></div>
+    </div>
+    <div class="two">
+      <div class="note">
+        <h3><code>setup()</code> runs once</h3>
+        <pre>createCanvas(400, 400);
+sun = <span class="k">new</span> Sunbeam();
+frank = <span class="k">new</span> Frank(190, 360);
+lightSlider = createSlider(0, 1023, 300);</pre>
+        <p>Make the canvas, the sun, Frank, and the slider.</p>
+      </div>
+      <div class="note">
+        <h3><code>draw()</code> runs about 60 times a second</h3>
+        <pre>background(255);
+sun.strength = lightSlider.value();
+sun.display();
+frank.update(sun.strength);
+frank.display();</pre>
+        <p>Wipe the canvas, set the light, draw the sun, then ask Frank to change his numbers and draw himself.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="words">
+    <header>
+      <div class="num">2 · CLASS WORDS</div>
+      <h2>The six words that make a class</h2>
+      <p>These are JavaScript, not p5, which is why most of them aren't on the p5 reference page. The p5 reference covers them briefly under Foundation → <code>class</code>, and MDN has a page for each.</p>
+    </header>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Word</th><th>In Frank's code</th><th>In plain words</th></tr></thead>
+        <tbody>
+          <tr><td><code>class</code></td><td><code>class Frank { ... }</code></td><td>The recipe for a Frank. Describes what he has and what he can do. Draws nothing by itself.</td></tr>
+          <tr><td><code>constructor</code></td><td><code>constructor(x, y) { ... }</code></td><td>Runs once, the moment a Frank is made. Gives him his starting values.</td></tr>
+          <tr><td><code>new</code></td><td><code>frank = new Frank(190, 360)</code></td><td>"Make one now." Runs the constructor, with 190 and 360 arriving as <code>x</code> and <code>y</code>.</td></tr>
+          <tr><td><code>this</code></td><td><code>this.anger = 0</code></td><td>"This Frank's own." Anything saved on <code>this</code> sticks around for <code>update()</code> and <code>display()</code> to use later.</td></tr>
+          <tr><td>property</td><td><code>this.size</code>, <code>this.anger</code></td><td>A number or value Frank carries around. His state.</td></tr>
+          <tr><td>method</td><td><code>update()</code>, <code>display()</code></td><td>A function that belongs to Frank. Something he can do. Called with a dot: <code>frank.display()</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note sun">
+      <p><strong>Capital vs lowercase.</strong> <code>Frank</code> is the class (the recipe in <code>frank.js</code>). <code>frank</code> is the one actual Frank, stored in a variable in <code>sketch.js</code>. Same idea as <code>Creature</code> and <code>blob</code> in the class demo.</p>
+    </div>
+  </section>
+
+  <section id="properties">
+    <header>
+      <div class="num">3 · HIS NUMBERS</div>
+      <h2>What Frank keeps track of</h2>
+      <p>The constructor sets these up. <code>update()</code> changes some of them each frame. <code>display()</code> only reads them. That split is the main idea of the class: logic in one place, drawing in another.</p>
+    </header>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Property</th><th>Starts as</th><th>Changed by</th><th>What it affects</th></tr></thead>
+        <tbody>
+          <tr><td><code>x</code>, <code>y</code></td><td>190, 360</td><td>Nothing, he stays put</td><td>Where he stands (the spot between his feet)</td></tr>
+          <tr><td><code>size</code></td><td>120</td><td>Nothing</td><td>How big every part is drawn</td></tr>
+          <tr><td><code>anger</code></td><td>0</td><td><code>update(light)</code>, since job 3</td><td>His whole face and posture (see section 7)</td></tr>
+          <tr><td><code>breath</code></td><td>0</td><td><code>update()</code>, using <code>sin(millis())</code></td><td>A slow stretch up and down, about every 3.5 seconds</td></tr>
+          <tr><td><code>lookX</code>, <code>lookY</code></td><td>0, 0</td><td><code>update()</code>, easing toward your mouse</td><td>Where his pupils point</td></tr>
+          <tr><td><code>blinker</code></td><td>a <code>new Blinker()</code></td><td>Itself, in <code>blinker.update()</code></td><td>When his eyelids shut</td></tr>
+          <tr><td>colors</td><td><code>color(190, 60, 55)</code> and friends</td><td>Nothing</td><td>Body, spikes, lids, lips, belly</td></tr>
+          <tr><td><code>bodyPts</code>, <code>spikes</code>, <code>hair</code>, <code>scales</code></td><td>Lists of numbers</td><td>Nothing</td><td>The shapes of his parts, as positions</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <p><strong>A class inside a class.</strong> <code>Blinker</code> is a second, tiny class at the bottom of <code>frank.js</code>. Frank makes one in his constructor and asks it every frame whether his eyes should be shut. It's the same pattern as Frank himself: constructor, <code>update()</code>, and a method that hands back a number.</p>
+    </div>
+  </section>
+
+  <section id="placing">
+    <header>
+      <div class="num">4 · PLACING HIM</div>
+      <h2>Two tricks that make the drawing manageable</h2>
+      <p>Turn on <em>his frame</em> in the live Frank to see both.</p>
+    </header>
+    <div class="two">
+      <div class="note">
+        <h3>Move the origin to his feet</h3>
+        <pre><span class="k">push</span>();
+translate(<span class="k">this</span>.x, <span class="k">this</span>.y);
+<span class="c">// ...draw every part...</span>
+<span class="k">pop</span>();</pre>
+        <p><code>translate()</code> moves the point (0, 0) to the spot between his feet, so every part can be drawn relative to him instead of to the canvas. <code>push()</code> and <code>pop()</code> are brackets: anything changed in between gets undone at <code>pop()</code>, so the sun and the rest of the sketch aren't moved too.</p>
+      </div>
+      <div class="note">
+        <h3>Measure everything in "Franks"</h3>
+        <pre><span class="k">let</span> s = <span class="k">this</span>.size;   <span class="c">// 120</span>
+ellipse(s * 0.25, bottom - s * 0.28,
+        s * 0.46, s * 0.44);  <span class="c">// belly</span></pre>
+        <p>Positions are written as fractions of his size. <code>s * 0.46</code> means "a bit under half a Frank wide." Change <code>this.size</code> to 80 and every part shrinks together. <code>bottom</code> is the bottom of his body, just above his legs.</p>
+      </div>
+    </div>
+    <div class="note">
+      <h3>Breathing and leaning</h3>
+      <pre>translate(0, bottom);
+rotate(-0.12 * bliss);
+scale(1 - 0.012 * <span class="k">this</span>.breath, 1 + 0.022 * <span class="k">this</span>.breath);
+translate(0, -bottom);</pre>
+      <p>Hop down to the bottom of his body, tip him back a little when he's content, stretch him slightly taller as he breathes in, then hop back. Doing it from <code>bottom</code> means he stretches upward from his legs instead of from the middle of the canvas.</p>
+    </div>
+  </section>
+
+  <section id="parts">
+    <header>
+      <div class="num">5 · BODY PARTS</div>
+      <h2>One method per part</h2>
+      <p>This is the level to explain the drawing at: what each method draws and which p5 shapes it uses. Toggle them in the live Frank to check.</p>
+    </header>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Method</th><th>Draws</th><th>p5 tools</th><th>One way to say it</th></tr></thead>
+        <tbody>
+          <tr><td><code>display()</code></td><td>Nothing on its own. Sets up the origin and breathing, then calls the parts below in order.</td><td><code>push</code>, <code>translate</code>, <code>rotate</code>, <code>scale</code></td><td class="say">"The director. Order matters: legs first so the body covers their tops."</td></tr>
+          <tr><td><code>drawLegs()</code></td><td>Two legs, feet, and claws. The back leg is a shade darker.</td><td><code>line</code>, <code>ellipse</code>, <code>triangle</code>, <code>lerpColor</code></td><td class="say">"A thick line for each leg, an ellipse foot, two little triangle claws."</td></tr>
+          <tr><td><code>drawSpikes()</code></td><td>Six spikes down his back.</td><td><code>triangle</code>, <code>createVector</code></td><td class="say">"Each spike is a triangle pointed away from the middle of his body."</td></tr>
+          <tr><td><code>drawHair()</code></td><td>Seven messy curls on top, swaying slightly.</td><td><code>bezier</code>, <code>sin</code>, <code>millis</code></td><td class="say">"Each strand is a curve that leans and curls, and wiggles over time."</td></tr>
+          <tr><td><code>bodyOutline()</code></td><td>His round, slouchy body shape.</td><td><code>beginShape</code>, <code>curveVertex</code></td><td class="say">"A smooth curve through twelve points. It loops past the start so the curve closes cleanly."</td></tr>
+          <tr><td><code>drawBelly()</code></td><td>The peach belly and its three plate lines.</td><td><code>ellipse</code>, <code>arc</code></td><td class="say">"An ellipse with three arcs across it."</td></tr>
+          <tr><td><code>drawScales()</code></td><td>Rows of little arcs over his back.</td><td><code>arc</code>, <code>dist</code></td><td class="say">"The constructor builds a list of scale spots that skips his face and belly. This just draws an arc at each spot."</td></tr>
+          <tr><td><code>drawFace()</code></td><td>Calls <code>drawEye()</code> twice, then <code>drawMouth()</code>, then the blush.</td><td><code>ellipse</code></td><td class="say">"Two different-sized eyes give him a three-quarter view."</td></tr>
+          <tr><td><code>drawEye()</code></td><td>Eyeball, pupil, heavy lid, blink, and brow.</td><td><code>ellipse</code>, <code>arc</code> with <code>CHORD</code>, <code>line</code>, <code>lerp</code></td><td class="say">"The lid is a slice of the eye. Anger tilts the brow and lowers the lid."</td></tr>
+          <tr><td><code>drawMouth()</code></td><td>Two lips, the underbite tooth, and the line between the lips.</td><td><code>bezierVertex</code>, <code>triangle</code>, <code>bezier</code></td><td class="say">"Curved lips that frown or smile with his mood. A small helper finds where the tooth should sit."</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tricks">
+    <header>
+      <div class="num">6 · SCARY BITS, TRANSLATED</div>
+      <h2>JavaScript shortcuts you'll see in his drawing</h2>
+      <p>Each of these looks strange but says something simple. The plain version on the right does the same thing.</p>
+    </header>
+    <div class="translate">
+      <div class="pair">
+        <h3>Unpacking a list in a loop</h3>
+        <pre><span class="k">for</span> (<span class="k">let</span> [x, y, len] <span class="k">of</span> <span class="k">this</span>.spikes) {
+  <span class="c">// use x, y, len</span>
+}</pre>
+        <p>"For each spike in the list, call its three numbers <code>x</code>, <code>y</code>, and <code>len</code>." It's a shorter way of writing a regular <code>for (let i = 0; ...)</code> loop with <code>this.spikes[i][0]</code> and so on.</p>
+      </div>
+      <div class="pair">
+        <h3>The question-mark if</h3>
+        <pre><span class="k">let</span> start = inward > 0 ? PI + 0.35 : PI - 0.15;</pre>
+        <p>An if/else squeezed into one line: "if <code>inward</code> is more than 0, use the first number, otherwise use the second." It's how the two eyes get mirrored lids.</p>
+      </div>
+      <div class="pair">
+        <h3>An arrow function</h3>
+        <pre><span class="k">let</span> lipLineY = (x) => {
+  <span class="c">// ...search along the lip curve...</span>
+};</pre>
+        <p>A small function saved in a variable, written inside <code>drawMouth()</code> because only the mouth needs it. Give it an x and it hands back where the lip line is, so the tooth sits exactly on the lip.</p>
+      </div>
+      <div class="pair">
+        <h3>Vectors</h3>
+        <pre><span class="k">let</span> n = createVector(x, y + 0.55).normalize();</pre>
+        <p>A vector is an arrow: a direction plus a length. This one points from the middle of his body out to the spike, and <code>normalize()</code> sets its length to 1 so it's purely a direction. Only the spikes use this.</p>
+      </div>
+      <div class="pair">
+        <h3>Clipping</h3>
+        <pre>beginClip();
+<span class="k">this</span>.bodyOutline(s, bottom);
+endClip();</pre>
+        <p>Works like a stencil. Until the next <code>pop()</code>, everything is only visible inside his body outline, so the belly, scales, and face can't spill past his edges.</p>
+      </div>
+      <div class="pair">
+        <h3>Easing with <code>lerp</code></h3>
+        <pre><span class="k">this</span>.lookX = lerp(<span class="k">this</span>.lookX, goalX, 0.12);</pre>
+        <p>"Move 12% of the way from where you are toward where you want to be." Repeated every frame, it makes things glide instead of jump. His eyes use it now, and his mood will in job 3.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="anger">
+    <header>
+      <div class="num">7 · THE MOOD DIAL</div>
+      <h2>One number runs his whole face</h2>
+      <p><code>anger</code> goes from 1 (annoyed) to -1 (content). Two helpers split it up: <code>annoyed = max(0, anger)</code> only counts the grumpy side, and <code>bliss = max(0, -anger)</code> only counts the happy side. Every feature reads from those.</p>
+    </header>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Feature</th><th>anger = 1</th><th>anger = 0</th><th>anger = -1</th></tr></thead>
+        <tbody>
+          <tr><td>Brows</td><td>Steep, angry slant</td><td>Slanted, skeptical</td><td>Nearly flat</td></tr>
+          <tr><td>Eyelids</td><td>Heavy</td><td>Heavy</td><td>Lifted and level</td></tr>
+          <tr><td>Mouth</td><td>Deep frown</td><td>Small frown</td><td>Small smile</td></tr>
+          <tr><td>Posture</td><td>Upright</td><td>Upright</td><td>Leans back toward the light</td></tr>
+          <tr><td>Cheeks</td><td>Plain</td><td>Plain</td><td>Pink blush</td></tr>
+          <tr><td>Eyes</td><td>Follow your mouse</td><td>Follow your mouse</td><td>Gaze up at the sun (below -0.4)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note sun">
+      <h3>Job 3 in four lines (walkthrough below)</h3>
+      <pre>update(light) {
+  <span class="c">// dark (0) makes him annoyed, full sun (1023) makes him content</span>
+  <span class="k">let</span> targetAnger = map(light, 0, 1023, 0.8, -1);
+  <span class="c">// ease toward that a little every frame</span>
+  <span class="k">this</span>.anger = lerp(<span class="k">this</span>.anger, targetAnger, 0.03);</pre>
+      <p>Plus <code>frank.update(sun.strength)</code> in <code>sketch.js</code>. That's the code the live Frank above is running.</p>
+    </div>
+  </section>
+
+  <section id="job3">
+    <header>
+      <div class="num">JOB 3 · FRANK FEELS THE LIGHT</div>
+      <h2>How the light becomes a mood</h2>
+      <p>Two edits connect the sunbeam to Frank. Before job 3 they didn't know about each other: the sun changed, and Frank's <code>anger</code> sat at 0.</p>
+    </header>
+    <div class="flow">
+      <div class="chip"><strong>lightSlider</strong><span>You set 0 to 1023</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip"><strong>sun.strength</strong><span>The sun holds it</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip hot"><strong>update(light)</strong><span>Frank receives it as <code>light</code></span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip"><strong>this.anger</strong><span>His mood moves toward it</span></div>
+    </div>
+    <div class="two">
+      <div class="note">
+        <h3>Edit 1, in <code>sketch.js</code>: hand it over</h3>
+        <pre>frank.update(sun.strength);</pre>
+        <p>The value inside the parentheses is passed to Frank. He doesn't know or care whether it came from a slider or an Arduino. He just gets a light level.</p>
+      </div>
+      <div class="note">
+        <h3>Edit 2, in <code>frank.js</code>: catch it</h3>
+        <pre>update(light) {
+  <span class="k">let</span> targetAnger = map(light, 0, 1023, 0.8, -1);
+  <span class="k">this</span>.anger = lerp(<span class="k">this</span>.anger, targetAnger, 0.03);
+  <span class="c">// ...blinking, breathing, eyes as before</span></pre>
+        <p><code>light</code> in the parentheses is a parameter: a name for whatever value gets handed in. Same idea as <code>x</code> and <code>y</code> in the constructor.</p>
+      </div>
+    </div>
+    <h3>Step 1: <code>map()</code> picks the mood he should be in</h3>
+    <p><code>map(light, 0, 1023, 0.8, -1)</code> reads as: "light goes from 0 to 1023, so stretch it onto a range from 0.8 to -1." The order flips on purpose, so more light means less anger.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Light</th><th>Target anger</th><th>How he looks</th></tr></thead>
+        <tbody>
+          <tr><td>0 (dark)</td><td>0.80</td><td>Grumpy</td></tr>
+          <tr><td>300</td><td>0.27</td><td>Mildly put out</td></tr>
+          <tr><td>512 (halfway)</td><td>-0.10</td><td>Indifferent</td></tr>
+          <tr><td>800</td><td>-0.61</td><td>Content, gazing at the sun</td></tr>
+          <tr><td>1023 (full sun)</td><td>-1.00</td><td>As happy as Frank gets</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">Why 0.8 and not 1? In total darkness he's grumpy, not furious. Change it to 1 if you want a crankier Frank.</p>
+    <h3>Step 2: <code>lerp()</code> eases him there</h3>
+    <p>If his anger jumped straight to the target, his face would snap. Instead, every frame he moves 3% of the remaining distance. Here's the slider jumping from dark to full sun, with his anger starting at 0:</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Frame</th><th>Time</th><th>anger</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>0 s</td><td>0.00</td></tr>
+          <tr><td>1</td><td>0.02 s</td><td>-0.03</td></tr>
+          <tr><td>2</td><td>0.03 s</td><td>-0.06</td></tr>
+          <tr><td>30</td><td>0.5 s</td><td>-0.60</td></tr>
+          <tr><td>60</td><td>1 s</td><td>-0.84</td></tr>
+          <tr><td>120</td><td>2 s</td><td>-0.97</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Big steps at first, smaller as he gets close. That's why he seems to warm up and then settle.</p>
+    <div class="note sun">
+      <h3>Try it: his personality is one number</h3>
+      <p>The <code>0.03</code> is how quickly he changes his mind. Try <code>0.2</code> and he reacts almost instantly, like an eager pet. Try <code>0.005</code> and he takes ages to come around, which is very Frank.</p>
+    </div>
+  </section>
+
+  <section id="job5">
+    <header>
+      <div class="num">JOB 5 · LAB DAY</div>
+      <h2>Wire Frank's light sensor</h2>
+      <p>Goal for the lab: the Arduino reads the photoresistor and prints numbers you can see change when you cover it or shine a light on it. No p5 yet. That's job 6.</p>
+    </header>
+    <div class="two">
+      <div class="note">
+        <h3>Bring</h3>
+        <p>Arduino Uno R3 and its USB cable, a breadboard, the photoresistor, a 10k resistor (brown, black, orange bands), and five jumper wires: two red, two black, one yellow. Colors don't change how it works, they just keep it readable.</p>
+      </div>
+      <div class="note sun">
+        <h3>How it works</h3>
+        <p>The photoresistor and the 10k resistor share column 13, and A0 listens to that spot. More light lets more of the 5V through the photoresistor, so A0 reads a higher number. Dark means a low number. That matches Frank: high light, happy Frank.</p>
+      </div>
+    </div>
+    <div class="bbwrap"><svg viewBox="0 0 740 560" role="img" aria-labelledby="bbt bbd" class="bb">
+<title id="bbt">Photoresistor wiring on a breadboard</title>
+<desc id="bbd">Arduino 5V to the bottom plus rail, GND to the bottom minus rail. A red jumper from the plus rail to j10. Photoresistor from g10 to g13. 10k resistor from h13 to h18. Black jumper from j18 to the minus rail. Yellow wire from i13 to A0.</desc>
+<rect x="40" y="36" width="660" height="370" rx="10" class="board"/>
+<rect x="44" y="210" width="652" height="20" class="gap"/>
+<text x="370" y="224" class="gaplabel">center gap: the two halves are not connected</text>
+<line x1="70" y1="51" x2="670" y2="51" stroke="#D93A32" stroke-width="1.5"/>
+<line x1="70" y1="89" x2="670" y2="89" stroke="#2F6FD0" stroke-width="1.5"/>
+<line x1="70" y1="369" x2="670" y2="369" stroke="#2F6FD0" stroke-width="1.5"/>
+<line x1="70" y1="391" x2="670" y2="391" stroke="#D93A32" stroke-width="1.5"/>
+<text x="60" y="64" class="rail plus">+</text><text x="60" y="84" class="rail minus">−</text>
+<text x="60" y="364" class="rail minus">−</text><text x="60" y="384" class="rail plus">+</text>
+<rect x="77" y="117" width="6" height="6" rx="1" class="hole"/><rect x="77" y="137" width="6" height="6" rx="1" class="hole"/><rect x="77" y="157" width="6" height="6" rx="1" class="hole"/><rect x="77" y="177" width="6" height="6" rx="1" class="hole"/><rect x="77" y="197" width="6" height="6" rx="1" class="hole"/><rect x="77" y="237" width="6" height="6" rx="1" class="hole"/><rect x="77" y="257" width="6" height="6" rx="1" class="hole"/><rect x="77" y="277" width="6" height="6" rx="1" class="hole"/><rect x="77" y="297" width="6" height="6" rx="1" class="hole"/><rect x="77" y="317" width="6" height="6" rx="1" class="hole"/><rect x="77" y="57" width="6" height="6" rx="1" class="hole"/><rect x="77" y="77" width="6" height="6" rx="1" class="hole"/><rect x="77" y="357" width="6" height="6" rx="1" class="hole"/><rect x="77" y="377" width="6" height="6" rx="1" class="hole"/><rect x="97" y="117" width="6" height="6" rx="1" class="hole"/><rect x="97" y="137" width="6" height="6" rx="1" class="hole"/><rect x="97" y="157" width="6" height="6" rx="1" class="hole"/><rect x="97" y="177" width="6" height="6" rx="1" class="hole"/><rect x="97" y="197" width="6" height="6" rx="1" class="hole"/><rect x="97" y="237" width="6" height="6" rx="1" class="hole"/><rect x="97" y="257" width="6" height="6" rx="1" class="hole"/><rect x="97" y="277" width="6" height="6" rx="1" class="hole"/><rect x="97" y="297" width="6" height="6" rx="1" class="hole"/><rect x="97" y="317" width="6" height="6" rx="1" class="hole"/><rect x="97" y="57" width="6" height="6" rx="1" class="hole"/><rect x="97" y="77" width="6" height="6" rx="1" class="hole"/><rect x="97" y="357" width="6" height="6" rx="1" class="hole"/><rect x="97" y="377" width="6" height="6" rx="1" class="hole"/><rect x="117" y="117" width="6" height="6" rx="1" class="hole"/><rect x="117" y="137" width="6" height="6" rx="1" class="hole"/><rect x="117" y="157" width="6" height="6" rx="1" class="hole"/><rect x="117" y="177" width="6" height="6" rx="1" class="hole"/><rect x="117" y="197" width="6" height="6" rx="1" class="hole"/><rect x="117" y="237" width="6" height="6" rx="1" class="hole"/><rect x="117" y="257" width="6" height="6" rx="1" class="hole"/><rect x="117" y="277" width="6" height="6" rx="1" class="hole"/><rect x="117" y="297" width="6" height="6" rx="1" class="hole"/><rect x="117" y="317" width="6" height="6" rx="1" class="hole"/><rect x="117" y="57" width="6" height="6" rx="1" class="hole"/><rect x="117" y="77" width="6" height="6" rx="1" class="hole"/><rect x="117" y="357" width="6" height="6" rx="1" class="hole"/><rect x="117" y="377" width="6" height="6" rx="1" class="hole"/><rect x="137" y="117" width="6" height="6" rx="1" class="hole"/><rect x="137" y="137" width="6" height="6" rx="1" class="hole"/><rect x="137" y="157" width="6" height="6" rx="1" class="hole"/><rect x="137" y="177" width="6" height="6" rx="1" class="hole"/><rect x="137" y="197" width="6" height="6" rx="1" class="hole"/><rect x="137" y="237" width="6" height="6" rx="1" class="hole"/><rect x="137" y="257" width="6" height="6" rx="1" class="hole"/><rect x="137" y="277" width="6" height="6" rx="1" class="hole"/><rect x="137" y="297" width="6" height="6" rx="1" class="hole"/><rect x="137" y="317" width="6" height="6" rx="1" class="hole"/><rect x="137" y="57" width="6" height="6" rx="1" class="hole"/><rect x="137" y="77" width="6" height="6" rx="1" class="hole"/><rect x="137" y="357" width="6" height="6" rx="1" class="hole"/><rect x="137" y="377" width="6" height="6" rx="1" class="hole"/><rect x="157" y="117" width="6" height="6" rx="1" class="hole"/><rect x="157" y="137" width="6" height="6" rx="1" class="hole"/><rect x="157" y="157" width="6" height="6" rx="1" class="hole"/><rect x="157" y="177" width="6" height="6" rx="1" class="hole"/><rect x="157" y="197" width="6" height="6" rx="1" class="hole"/><rect x="157" y="237" width="6" height="6" rx="1" class="hole"/><rect x="157" y="257" width="6" height="6" rx="1" class="hole"/><rect x="157" y="277" width="6" height="6" rx="1" class="hole"/><rect x="157" y="297" width="6" height="6" rx="1" class="hole"/><rect x="157" y="317" width="6" height="6" rx="1" class="hole"/><rect x="157" y="57" width="6" height="6" rx="1" class="hole"/><rect x="157" y="77" width="6" height="6" rx="1" class="hole"/><rect x="157" y="357" width="6" height="6" rx="1" class="hole"/><rect x="157" y="377" width="6" height="6" rx="1" class="hole"/><rect x="177" y="117" width="6" height="6" rx="1" class="hole"/><rect x="177" y="137" width="6" height="6" rx="1" class="hole"/><rect x="177" y="157" width="6" height="6" rx="1" class="hole"/><rect x="177" y="177" width="6" height="6" rx="1" class="hole"/><rect x="177" y="197" width="6" height="6" rx="1" class="hole"/><rect x="177" y="237" width="6" height="6" rx="1" class="hole"/><rect x="177" y="257" width="6" height="6" rx="1" class="hole"/><rect x="177" y="277" width="6" height="6" rx="1" class="hole"/><rect x="177" y="297" width="6" height="6" rx="1" class="hole"/><rect x="177" y="317" width="6" height="6" rx="1" class="hole"/><rect x="177" y="57" width="6" height="6" rx="1" class="hole"/><rect x="177" y="77" width="6" height="6" rx="1" class="hole"/><rect x="177" y="357" width="6" height="6" rx="1" class="hole"/><rect x="177" y="377" width="6" height="6" rx="1" class="hole"/><rect x="197" y="117" width="6" height="6" rx="1" class="hole"/><rect x="197" y="137" width="6" height="6" rx="1" class="hole"/><rect x="197" y="157" width="6" height="6" rx="1" class="hole"/><rect x="197" y="177" width="6" height="6" rx="1" class="hole"/><rect x="197" y="197" width="6" height="6" rx="1" class="hole"/><rect x="197" y="237" width="6" height="6" rx="1" class="hole"/><rect x="197" y="257" width="6" height="6" rx="1" class="hole"/><rect x="197" y="277" width="6" height="6" rx="1" class="hole"/><rect x="197" y="297" width="6" height="6" rx="1" class="hole"/><rect x="197" y="317" width="6" height="6" rx="1" class="hole"/><rect x="197" y="57" width="6" height="6" rx="1" class="hole"/><rect x="197" y="77" width="6" height="6" rx="1" class="hole"/><rect x="197" y="357" width="6" height="6" rx="1" class="hole"/><rect x="197" y="377" width="6" height="6" rx="1" class="hole"/><rect x="217" y="117" width="6" height="6" rx="1" class="hole"/><rect x="217" y="137" width="6" height="6" rx="1" class="hole"/><rect x="217" y="157" width="6" height="6" rx="1" class="hole"/><rect x="217" y="177" width="6" height="6" rx="1" class="hole"/><rect x="217" y="197" width="6" height="6" rx="1" class="hole"/><rect x="217" y="237" width="6" height="6" rx="1" class="hole"/><rect x="217" y="257" width="6" height="6" rx="1" class="hole"/><rect x="217" y="277" width="6" height="6" rx="1" class="hole"/><rect x="217" y="297" width="6" height="6" rx="1" class="hole"/><rect x="217" y="317" width="6" height="6" rx="1" class="hole"/><rect x="217" y="57" width="6" height="6" rx="1" class="hole"/><rect x="217" y="77" width="6" height="6" rx="1" class="hole"/><rect x="217" y="357" width="6" height="6" rx="1" class="hole"/><rect x="217" y="377" width="6" height="6" rx="1" class="hole"/><rect x="237" y="117" width="6" height="6" rx="1" class="hole"/><rect x="237" y="137" width="6" height="6" rx="1" class="hole"/><rect x="237" y="157" width="6" height="6" rx="1" class="hole"/><rect x="237" y="177" width="6" height="6" rx="1" class="hole"/><rect x="237" y="197" width="6" height="6" rx="1" class="hole"/><rect x="237" y="237" width="6" height="6" rx="1" class="hole"/><rect x="237" y="257" width="6" height="6" rx="1" class="hole"/><rect x="237" y="277" width="6" height="6" rx="1" class="hole"/><rect x="237" y="297" width="6" height="6" rx="1" class="hole"/><rect x="237" y="317" width="6" height="6" rx="1" class="hole"/><rect x="237" y="57" width="6" height="6" rx="1" class="hole"/><rect x="237" y="77" width="6" height="6" rx="1" class="hole"/><rect x="237" y="357" width="6" height="6" rx="1" class="hole"/><rect x="237" y="377" width="6" height="6" rx="1" class="hole"/><rect x="257" y="117" width="6" height="6" rx="1" class="hole"/><rect x="257" y="137" width="6" height="6" rx="1" class="hole"/><rect x="257" y="157" width="6" height="6" rx="1" class="hole"/><rect x="257" y="177" width="6" height="6" rx="1" class="hole"/><rect x="257" y="197" width="6" height="6" rx="1" class="hole"/><rect x="257" y="237" width="6" height="6" rx="1" class="hole"/><rect x="257" y="257" width="6" height="6" rx="1" class="hole"/><rect x="257" y="277" width="6" height="6" rx="1" class="hole"/><rect x="257" y="297" width="6" height="6" rx="1" class="hole"/><rect x="257" y="317" width="6" height="6" rx="1" class="hole"/><rect x="257" y="57" width="6" height="6" rx="1" class="hole"/><rect x="257" y="77" width="6" height="6" rx="1" class="hole"/><rect x="257" y="357" width="6" height="6" rx="1" class="hole"/><rect x="257" y="377" width="6" height="6" rx="1" class="hole"/><rect x="277" y="117" width="6" height="6" rx="1" class="hole"/><rect x="277" y="137" width="6" height="6" rx="1" class="hole"/><rect x="277" y="157" width="6" height="6" rx="1" class="hole"/><rect x="277" y="177" width="6" height="6" rx="1" class="hole"/><rect x="277" y="197" width="6" height="6" rx="1" class="hole"/><rect x="277" y="237" width="6" height="6" rx="1" class="hole"/><rect x="277" y="257" width="6" height="6" rx="1" class="hole"/><rect x="277" y="277" width="6" height="6" rx="1" class="hole"/><rect x="277" y="297" width="6" height="6" rx="1" class="hole"/><rect x="277" y="317" width="6" height="6" rx="1" class="hole"/><rect x="277" y="57" width="6" height="6" rx="1" class="hole"/><rect x="277" y="77" width="6" height="6" rx="1" class="hole"/><rect x="277" y="357" width="6" height="6" rx="1" class="hole"/><rect x="277" y="377" width="6" height="6" rx="1" class="hole"/><rect x="297" y="117" width="6" height="6" rx="1" class="hole"/><rect x="297" y="137" width="6" height="6" rx="1" class="hole"/><rect x="297" y="157" width="6" height="6" rx="1" class="hole"/><rect x="297" y="177" width="6" height="6" rx="1" class="hole"/><rect x="297" y="197" width="6" height="6" rx="1" class="hole"/><rect x="297" y="237" width="6" height="6" rx="1" class="hole"/><rect x="297" y="257" width="6" height="6" rx="1" class="hole"/><rect x="297" y="277" width="6" height="6" rx="1" class="hole"/><rect x="297" y="297" width="6" height="6" rx="1" class="hole"/><rect x="297" y="317" width="6" height="6" rx="1" class="hole"/><rect x="297" y="57" width="6" height="6" rx="1" class="hole"/><rect x="297" y="77" width="6" height="6" rx="1" class="hole"/><rect x="297" y="357" width="6" height="6" rx="1" class="hole"/><rect x="297" y="377" width="6" height="6" rx="1" class="hole"/><rect x="317" y="117" width="6" height="6" rx="1" class="hole"/><rect x="317" y="137" width="6" height="6" rx="1" class="hole"/><rect x="317" y="157" width="6" height="6" rx="1" class="hole"/><rect x="317" y="177" width="6" height="6" rx="1" class="hole"/><rect x="317" y="197" width="6" height="6" rx="1" class="hole"/><rect x="317" y="237" width="6" height="6" rx="1" class="hole"/><rect x="317" y="257" width="6" height="6" rx="1" class="hole"/><rect x="317" y="277" width="6" height="6" rx="1" class="hole"/><rect x="317" y="297" width="6" height="6" rx="1" class="hole"/><rect x="317" y="317" width="6" height="6" rx="1" class="hole"/><rect x="317" y="57" width="6" height="6" rx="1" class="hole"/><rect x="317" y="77" width="6" height="6" rx="1" class="hole"/><rect x="317" y="357" width="6" height="6" rx="1" class="hole"/><rect x="317" y="377" width="6" height="6" rx="1" class="hole"/><rect x="337" y="117" width="6" height="6" rx="1" class="hole"/><rect x="337" y="137" width="6" height="6" rx="1" class="hole"/><rect x="337" y="157" width="6" height="6" rx="1" class="hole"/><rect x="337" y="177" width="6" height="6" rx="1" class="hole"/><rect x="337" y="197" width="6" height="6" rx="1" class="hole"/><rect x="337" y="237" width="6" height="6" rx="1" class="hole"/><rect x="337" y="257" width="6" height="6" rx="1" class="hole"/><rect x="337" y="277" width="6" height="6" rx="1" class="hole"/><rect x="337" y="297" width="6" height="6" rx="1" class="hole"/><rect x="337" y="317" width="6" height="6" rx="1" class="hole"/><rect x="337" y="57" width="6" height="6" rx="1" class="hole"/><rect x="337" y="77" width="6" height="6" rx="1" class="hole"/><rect x="337" y="357" width="6" height="6" rx="1" class="hole"/><rect x="337" y="377" width="6" height="6" rx="1" class="hole"/><rect x="357" y="117" width="6" height="6" rx="1" class="hole"/><rect x="357" y="137" width="6" height="6" rx="1" class="hole"/><rect x="357" y="157" width="6" height="6" rx="1" class="hole"/><rect x="357" y="177" width="6" height="6" rx="1" class="hole"/><rect x="357" y="197" width="6" height="6" rx="1" class="hole"/><rect x="357" y="237" width="6" height="6" rx="1" class="hole"/><rect x="357" y="257" width="6" height="6" rx="1" class="hole"/><rect x="357" y="277" width="6" height="6" rx="1" class="hole"/><rect x="357" y="297" width="6" height="6" rx="1" class="hole"/><rect x="357" y="317" width="6" height="6" rx="1" class="hole"/><rect x="357" y="57" width="6" height="6" rx="1" class="hole"/><rect x="357" y="77" width="6" height="6" rx="1" class="hole"/><rect x="357" y="357" width="6" height="6" rx="1" class="hole"/><rect x="357" y="377" width="6" height="6" rx="1" class="hole"/><rect x="377" y="117" width="6" height="6" rx="1" class="hole"/><rect x="377" y="137" width="6" height="6" rx="1" class="hole"/><rect x="377" y="157" width="6" height="6" rx="1" class="hole"/><rect x="377" y="177" width="6" height="6" rx="1" class="hole"/><rect x="377" y="197" width="6" height="6" rx="1" class="hole"/><rect x="377" y="237" width="6" height="6" rx="1" class="hole"/><rect x="377" y="257" width="6" height="6" rx="1" class="hole"/><rect x="377" y="277" width="6" height="6" rx="1" class="hole"/><rect x="377" y="297" width="6" height="6" rx="1" class="hole"/><rect x="377" y="317" width="6" height="6" rx="1" class="hole"/><rect x="377" y="57" width="6" height="6" rx="1" class="hole"/><rect x="377" y="77" width="6" height="6" rx="1" class="hole"/><rect x="377" y="357" width="6" height="6" rx="1" class="hole"/><rect x="377" y="377" width="6" height="6" rx="1" class="hole"/><rect x="397" y="117" width="6" height="6" rx="1" class="hole"/><rect x="397" y="137" width="6" height="6" rx="1" class="hole"/><rect x="397" y="157" width="6" height="6" rx="1" class="hole"/><rect x="397" y="177" width="6" height="6" rx="1" class="hole"/><rect x="397" y="197" width="6" height="6" rx="1" class="hole"/><rect x="397" y="237" width="6" height="6" rx="1" class="hole"/><rect x="397" y="257" width="6" height="6" rx="1" class="hole"/><rect x="397" y="277" width="6" height="6" rx="1" class="hole"/><rect x="397" y="297" width="6" height="6" rx="1" class="hole"/><rect x="397" y="317" width="6" height="6" rx="1" class="hole"/><rect x="397" y="57" width="6" height="6" rx="1" class="hole"/><rect x="397" y="77" width="6" height="6" rx="1" class="hole"/><rect x="397" y="357" width="6" height="6" rx="1" class="hole"/><rect x="397" y="377" width="6" height="6" rx="1" class="hole"/><rect x="417" y="117" width="6" height="6" rx="1" class="hole"/><rect x="417" y="137" width="6" height="6" rx="1" class="hole"/><rect x="417" y="157" width="6" height="6" rx="1" class="hole"/><rect x="417" y="177" width="6" height="6" rx="1" class="hole"/><rect x="417" y="197" width="6" height="6" rx="1" class="hole"/><rect x="417" y="237" width="6" height="6" rx="1" class="hole"/><rect x="417" y="257" width="6" height="6" rx="1" class="hole"/><rect x="417" y="277" width="6" height="6" rx="1" class="hole"/><rect x="417" y="297" width="6" height="6" rx="1" class="hole"/><rect x="417" y="317" width="6" height="6" rx="1" class="hole"/><rect x="417" y="57" width="6" height="6" rx="1" class="hole"/><rect x="417" y="77" width="6" height="6" rx="1" class="hole"/><rect x="417" y="357" width="6" height="6" rx="1" class="hole"/><rect x="417" y="377" width="6" height="6" rx="1" class="hole"/><rect x="437" y="117" width="6" height="6" rx="1" class="hole"/><rect x="437" y="137" width="6" height="6" rx="1" class="hole"/><rect x="437" y="157" width="6" height="6" rx="1" class="hole"/><rect x="437" y="177" width="6" height="6" rx="1" class="hole"/><rect x="437" y="197" width="6" height="6" rx="1" class="hole"/><rect x="437" y="237" width="6" height="6" rx="1" class="hole"/><rect x="437" y="257" width="6" height="6" rx="1" class="hole"/><rect x="437" y="277" width="6" height="6" rx="1" class="hole"/><rect x="437" y="297" width="6" height="6" rx="1" class="hole"/><rect x="437" y="317" width="6" height="6" rx="1" class="hole"/><rect x="437" y="57" width="6" height="6" rx="1" class="hole"/><rect x="437" y="77" width="6" height="6" rx="1" class="hole"/><rect x="437" y="357" width="6" height="6" rx="1" class="hole"/><rect x="437" y="377" width="6" height="6" rx="1" class="hole"/><rect x="457" y="117" width="6" height="6" rx="1" class="hole"/><rect x="457" y="137" width="6" height="6" rx="1" class="hole"/><rect x="457" y="157" width="6" height="6" rx="1" class="hole"/><rect x="457" y="177" width="6" height="6" rx="1" class="hole"/><rect x="457" y="197" width="6" height="6" rx="1" class="hole"/><rect x="457" y="237" width="6" height="6" rx="1" class="hole"/><rect x="457" y="257" width="6" height="6" rx="1" class="hole"/><rect x="457" y="277" width="6" height="6" rx="1" class="hole"/><rect x="457" y="297" width="6" height="6" rx="1" class="hole"/><rect x="457" y="317" width="6" height="6" rx="1" class="hole"/><rect x="457" y="57" width="6" height="6" rx="1" class="hole"/><rect x="457" y="77" width="6" height="6" rx="1" class="hole"/><rect x="457" y="357" width="6" height="6" rx="1" class="hole"/><rect x="457" y="377" width="6" height="6" rx="1" class="hole"/><rect x="477" y="117" width="6" height="6" rx="1" class="hole"/><rect x="477" y="137" width="6" height="6" rx="1" class="hole"/><rect x="477" y="157" width="6" height="6" rx="1" class="hole"/><rect x="477" y="177" width="6" height="6" rx="1" class="hole"/><rect x="477" y="197" width="6" height="6" rx="1" class="hole"/><rect x="477" y="237" width="6" height="6" rx="1" class="hole"/><rect x="477" y="257" width="6" height="6" rx="1" class="hole"/><rect x="477" y="277" width="6" height="6" rx="1" class="hole"/><rect x="477" y="297" width="6" height="6" rx="1" class="hole"/><rect x="477" y="317" width="6" height="6" rx="1" class="hole"/><rect x="477" y="57" width="6" height="6" rx="1" class="hole"/><rect x="477" y="77" width="6" height="6" rx="1" class="hole"/><rect x="477" y="357" width="6" height="6" rx="1" class="hole"/><rect x="477" y="377" width="6" height="6" rx="1" class="hole"/><rect x="497" y="117" width="6" height="6" rx="1" class="hole"/><rect x="497" y="137" width="6" height="6" rx="1" class="hole"/><rect x="497" y="157" width="6" height="6" rx="1" class="hole"/><rect x="497" y="177" width="6" height="6" rx="1" class="hole"/><rect x="497" y="197" width="6" height="6" rx="1" class="hole"/><rect x="497" y="237" width="6" height="6" rx="1" class="hole"/><rect x="497" y="257" width="6" height="6" rx="1" class="hole"/><rect x="497" y="277" width="6" height="6" rx="1" class="hole"/><rect x="497" y="297" width="6" height="6" rx="1" class="hole"/><rect x="497" y="317" width="6" height="6" rx="1" class="hole"/><rect x="497" y="57" width="6" height="6" rx="1" class="hole"/><rect x="497" y="77" width="6" height="6" rx="1" class="hole"/><rect x="497" y="357" width="6" height="6" rx="1" class="hole"/><rect x="497" y="377" width="6" height="6" rx="1" class="hole"/><rect x="517" y="117" width="6" height="6" rx="1" class="hole"/><rect x="517" y="137" width="6" height="6" rx="1" class="hole"/><rect x="517" y="157" width="6" height="6" rx="1" class="hole"/><rect x="517" y="177" width="6" height="6" rx="1" class="hole"/><rect x="517" y="197" width="6" height="6" rx="1" class="hole"/><rect x="517" y="237" width="6" height="6" rx="1" class="hole"/><rect x="517" y="257" width="6" height="6" rx="1" class="hole"/><rect x="517" y="277" width="6" height="6" rx="1" class="hole"/><rect x="517" y="297" width="6" height="6" rx="1" class="hole"/><rect x="517" y="317" width="6" height="6" rx="1" class="hole"/><rect x="517" y="57" width="6" height="6" rx="1" class="hole"/><rect x="517" y="77" width="6" height="6" rx="1" class="hole"/><rect x="517" y="357" width="6" height="6" rx="1" class="hole"/><rect x="517" y="377" width="6" height="6" rx="1" class="hole"/><rect x="537" y="117" width="6" height="6" rx="1" class="hole"/><rect x="537" y="137" width="6" height="6" rx="1" class="hole"/><rect x="537" y="157" width="6" height="6" rx="1" class="hole"/><rect x="537" y="177" width="6" height="6" rx="1" class="hole"/><rect x="537" y="197" width="6" height="6" rx="1" class="hole"/><rect x="537" y="237" width="6" height="6" rx="1" class="hole"/><rect x="537" y="257" width="6" height="6" rx="1" class="hole"/><rect x="537" y="277" width="6" height="6" rx="1" class="hole"/><rect x="537" y="297" width="6" height="6" rx="1" class="hole"/><rect x="537" y="317" width="6" height="6" rx="1" class="hole"/><rect x="537" y="57" width="6" height="6" rx="1" class="hole"/><rect x="537" y="77" width="6" height="6" rx="1" class="hole"/><rect x="537" y="357" width="6" height="6" rx="1" class="hole"/><rect x="537" y="377" width="6" height="6" rx="1" class="hole"/><rect x="557" y="117" width="6" height="6" rx="1" class="hole"/><rect x="557" y="137" width="6" height="6" rx="1" class="hole"/><rect x="557" y="157" width="6" height="6" rx="1" class="hole"/><rect x="557" y="177" width="6" height="6" rx="1" class="hole"/><rect x="557" y="197" width="6" height="6" rx="1" class="hole"/><rect x="557" y="237" width="6" height="6" rx="1" class="hole"/><rect x="557" y="257" width="6" height="6" rx="1" class="hole"/><rect x="557" y="277" width="6" height="6" rx="1" class="hole"/><rect x="557" y="297" width="6" height="6" rx="1" class="hole"/><rect x="557" y="317" width="6" height="6" rx="1" class="hole"/><rect x="557" y="57" width="6" height="6" rx="1" class="hole"/><rect x="557" y="77" width="6" height="6" rx="1" class="hole"/><rect x="557" y="357" width="6" height="6" rx="1" class="hole"/><rect x="557" y="377" width="6" height="6" rx="1" class="hole"/><rect x="577" y="117" width="6" height="6" rx="1" class="hole"/><rect x="577" y="137" width="6" height="6" rx="1" class="hole"/><rect x="577" y="157" width="6" height="6" rx="1" class="hole"/><rect x="577" y="177" width="6" height="6" rx="1" class="hole"/><rect x="577" y="197" width="6" height="6" rx="1" class="hole"/><rect x="577" y="237" width="6" height="6" rx="1" class="hole"/><rect x="577" y="257" width="6" height="6" rx="1" class="hole"/><rect x="577" y="277" width="6" height="6" rx="1" class="hole"/><rect x="577" y="297" width="6" height="6" rx="1" class="hole"/><rect x="577" y="317" width="6" height="6" rx="1" class="hole"/><rect x="577" y="57" width="6" height="6" rx="1" class="hole"/><rect x="577" y="77" width="6" height="6" rx="1" class="hole"/><rect x="577" y="357" width="6" height="6" rx="1" class="hole"/><rect x="577" y="377" width="6" height="6" rx="1" class="hole"/><rect x="597" y="117" width="6" height="6" rx="1" class="hole"/><rect x="597" y="137" width="6" height="6" rx="1" class="hole"/><rect x="597" y="157" width="6" height="6" rx="1" class="hole"/><rect x="597" y="177" width="6" height="6" rx="1" class="hole"/><rect x="597" y="197" width="6" height="6" rx="1" class="hole"/><rect x="597" y="237" width="6" height="6" rx="1" class="hole"/><rect x="597" y="257" width="6" height="6" rx="1" class="hole"/><rect x="597" y="277" width="6" height="6" rx="1" class="hole"/><rect x="597" y="297" width="6" height="6" rx="1" class="hole"/><rect x="597" y="317" width="6" height="6" rx="1" class="hole"/><rect x="597" y="57" width="6" height="6" rx="1" class="hole"/><rect x="597" y="77" width="6" height="6" rx="1" class="hole"/><rect x="597" y="357" width="6" height="6" rx="1" class="hole"/><rect x="597" y="377" width="6" height="6" rx="1" class="hole"/><rect x="617" y="117" width="6" height="6" rx="1" class="hole"/><rect x="617" y="137" width="6" height="6" rx="1" class="hole"/><rect x="617" y="157" width="6" height="6" rx="1" class="hole"/><rect x="617" y="177" width="6" height="6" rx="1" class="hole"/><rect x="617" y="197" width="6" height="6" rx="1" class="hole"/><rect x="617" y="237" width="6" height="6" rx="1" class="hole"/><rect x="617" y="257" width="6" height="6" rx="1" class="hole"/><rect x="617" y="277" width="6" height="6" rx="1" class="hole"/><rect x="617" y="297" width="6" height="6" rx="1" class="hole"/><rect x="617" y="317" width="6" height="6" rx="1" class="hole"/><rect x="617" y="57" width="6" height="6" rx="1" class="hole"/><rect x="617" y="77" width="6" height="6" rx="1" class="hole"/><rect x="617" y="357" width="6" height="6" rx="1" class="hole"/><rect x="617" y="377" width="6" height="6" rx="1" class="hole"/><rect x="637" y="117" width="6" height="6" rx="1" class="hole"/><rect x="637" y="137" width="6" height="6" rx="1" class="hole"/><rect x="637" y="157" width="6" height="6" rx="1" class="hole"/><rect x="637" y="177" width="6" height="6" rx="1" class="hole"/><rect x="637" y="197" width="6" height="6" rx="1" class="hole"/><rect x="637" y="237" width="6" height="6" rx="1" class="hole"/><rect x="637" y="257" width="6" height="6" rx="1" class="hole"/><rect x="637" y="277" width="6" height="6" rx="1" class="hole"/><rect x="637" y="297" width="6" height="6" rx="1" class="hole"/><rect x="637" y="317" width="6" height="6" rx="1" class="hole"/><rect x="637" y="57" width="6" height="6" rx="1" class="hole"/><rect x="637" y="77" width="6" height="6" rx="1" class="hole"/><rect x="637" y="357" width="6" height="6" rx="1" class="hole"/><rect x="637" y="377" width="6" height="6" rx="1" class="hole"/><rect x="657" y="117" width="6" height="6" rx="1" class="hole"/><rect x="657" y="137" width="6" height="6" rx="1" class="hole"/><rect x="657" y="157" width="6" height="6" rx="1" class="hole"/><rect x="657" y="177" width="6" height="6" rx="1" class="hole"/><rect x="657" y="197" width="6" height="6" rx="1" class="hole"/><rect x="657" y="237" width="6" height="6" rx="1" class="hole"/><rect x="657" y="257" width="6" height="6" rx="1" class="hole"/><rect x="657" y="277" width="6" height="6" rx="1" class="hole"/><rect x="657" y="297" width="6" height="6" rx="1" class="hole"/><rect x="657" y="317" width="6" height="6" rx="1" class="hole"/><rect x="657" y="57" width="6" height="6" rx="1" class="hole"/><rect x="657" y="77" width="6" height="6" rx="1" class="hole"/><rect x="657" y="357" width="6" height="6" rx="1" class="hole"/><rect x="657" y="377" width="6" height="6" rx="1" class="hole"/>
+<text x="80" y="104" class="bbnum">1</text><text x="160" y="104" class="bbnum">5</text><text x="260" y="104" class="bbnum">10</text><text x="320" y="104" class="bbnum">13</text><text x="360" y="104" class="bbnum">15</text><text x="420" y="104" class="bbnum">18</text><text x="460" y="104" class="bbnum">20</text><text x="560" y="104" class="bbnum">25</text><text x="660" y="104" class="bbnum">30</text><text x="62" y="124" class="bblet">a</text><text x="678" y="124" class="bblet">a</text><text x="62" y="144" class="bblet">b</text><text x="678" y="144" class="bblet">b</text><text x="62" y="164" class="bblet">c</text><text x="678" y="164" class="bblet">c</text><text x="62" y="184" class="bblet">d</text><text x="678" y="184" class="bblet">d</text><text x="62" y="204" class="bblet">e</text><text x="678" y="204" class="bblet">e</text><text x="62" y="244" class="bblet">f</text><text x="678" y="244" class="bblet">f</text><text x="62" y="264" class="bblet">g</text><text x="678" y="264" class="bblet">g</text><text x="62" y="284" class="bblet">h</text><text x="678" y="284" class="bblet">h</text><text x="62" y="304" class="bblet">i</text><text x="678" y="304" class="bblet">i</text><text x="62" y="324" class="bblet">j</text><text x="678" y="324" class="bblet">j</text>
+<rect x="250" y="232" width="20" height="96" rx="4" class="colhint"/>
+<rect x="310" y="232" width="20" height="96" rx="4" class="colhint"/>
+<rect x="410" y="232" width="20" height="96" rx="4" class="colhint"/>
+
+<!-- photoresistor g10 to g13 -->
+<line x1="260" y1="260" x2="275" y2="260" class="leg"/><line x1="305" y1="260" x2="320" y2="260" class="leg"/>
+<circle cx="290" cy="260" r="15" class="ldr"/>
+<path d="M281 254 q4 -4 6 0 t6 0 t6 0 M281 262 q4 -4 6 0 t6 0 t6 0" class="ldrsq"/>
+<!-- 10k resistor h13 to h18 -->
+<line x1="320" y1="280" x2="352" y2="280" class="leg"/><line x1="388" y1="280" x2="420" y2="280" class="leg"/>
+<rect x="352" y="273" width="36" height="14" rx="6" class="res"/>
+<rect x="359" y="273" width="4" height="14" fill="#7B4A2A"/><rect x="367" y="273" width="4" height="14" fill="#1E1E1E"/><rect x="375" y="273" width="4" height="14" fill="#E2832B"/>
+
+<!-- wires -->
+<path d="M220 452 V380" class="w red"/>
+<path d="M240 452 V360" class="w blk"/>
+<path d="M260 320 V380" class="w red"/>
+<path d="M420 320 V360" class="w blk"/>
+<path d="M320 300 V418 H360 V452" class="w yel"/>
+<circle cx="220" cy="380" r="5" class="used"/><circle cx="240" cy="360" r="5" class="used"/><circle cx="260" cy="380" r="5" class="used"/><circle cx="260" cy="320" r="5" class="used"/><circle cx="260" cy="260" r="5" class="used"/><circle cx="320" cy="260" r="5" class="used"/><circle cx="320" cy="280" r="5" class="used"/><circle cx="320" cy="300" r="5" class="used"/><circle cx="420" cy="280" r="5" class="used"/><circle cx="420" cy="320" r="5" class="used"/><circle cx="420" cy="360" r="5" class="used"/>
+
+<!-- callouts -->
+<text x="290" y="245" class="call">photoresistor</text><text x="268" y="345" class="call">10</text><text x="328" y="345" class="call">13</text><text x="428" y="345" class="call">18</text>
+<text x="370" y="304" class="call">10k Ω</text>
+
+<!-- Arduino -->
+<rect x="120" y="440" width="520" height="100" rx="10" class="uno"/>
+<text x="380" y="526" class="unotitle">Arduino Uno R3 (header edge)</text>
+<rect x="155" y="447" width="10" height="10" class="pin"/><rect x="175" y="447" width="10" height="10" class="pin"/><rect x="195" y="447" width="10" height="10" class="pin"/><rect x="215" y="447" width="10" height="10" class="pin"/><rect x="235" y="447" width="10" height="10" class="pin"/><rect x="255" y="447" width="10" height="10" class="pin"/><rect x="275" y="447" width="10" height="10" class="pin"/><rect x="355" y="447" width="10" height="10" class="pin"/><rect x="375" y="447" width="10" height="10" class="pin"/><rect x="395" y="447" width="10" height="10" class="pin"/><rect x="415" y="447" width="10" height="10" class="pin"/><rect x="435" y="447" width="10" height="10" class="pin"/><rect x="455" y="447" width="10" height="10" class="pin"/>
+<text x="220" y="476" class="pinlab">5V</text><text x="240" y="492" class="pinlab">GND</text>
+<text x="360" y="476" class="pinlab">A0</text>
+<text x="220" y="508" class="pingroup">power pins</text><text x="410" y="508" class="pingroup">analog pins A0 to A5</text>
+</svg></div>
+    <p class="muted">Rings mark where a wire or leg goes into a hole. A wire only connects where it ends, not where it crosses a rail. Highlighted columns are the three that matter: 10, 13 and 18.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Wire or part</th><th>From</th><th>To</th></tr></thead>
+        <tbody>
+          <tr><td><span class="swatch" style="background:#D93A32"></span>Red</td><td>Arduino <code>5V</code></td><td>Bottom <code>+</code> rail</td></tr>
+          <tr><td><span class="swatch" style="background:#1E1E1E"></span>Black</td><td>Arduino <code>GND</code></td><td>Bottom <code>−</code> rail</td></tr>
+          <tr><td><span class="swatch" style="background:#D93A32"></span>Red jumper</td><td>Bottom <code>+</code> rail</td><td><code>j10</code></td></tr>
+          <tr><td>Photoresistor</td><td><code>g10</code></td><td><code>g13</code> (either way round)</td></tr>
+          <tr><td>10k resistor</td><td><code>h13</code></td><td><code>h18</code> (either way round)</td></tr>
+          <tr><td><span class="swatch" style="background:#1E1E1E"></span>Black jumper</td><td><code>j18</code></td><td>Bottom <code>−</code> rail</td></tr>
+          <tr><td><span class="swatch" style="background:#E2B91E"></span>Yellow</td><td><code>i13</code></td><td>Arduino <code>A0</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>The Arduino code</h3>
+    <pre><span class="c">// Frank's light sensor: reads the photoresistor and sends the number to the computer</span>
+<span class="k">const int</span> sensorPin = A0;
+
+<span class="k">void</span> setup() {
+  Serial.begin(9600);                  <span class="c">// open the line to the computer</span>
+}
+
+<span class="k">void</span> loop() {
+  <span class="k">int</span> light = analogRead(sensorPin);   <span class="c">// 0 to 1023</span>
+  Serial.println(light);               <span class="c">// send it, one number per line</span>
+  delay(50);                           <span class="c">// about 20 readings a second</span>
+}</pre>
+    <p>Same tools as your class work: <code>analogRead</code> to read, <code>Serial.println</code> to send. Type it in yourself and save it as <code>frank_light</code> in the Arduino IDE. In job 6, p5 will listen to exactly these numbers.</p>
+    <h3>In the lab, step by step</h3>
+    <ol class="checklist">
+      <li><p><strong>Wire it with the USB unplugged.</strong> Follow the table row by row, checking off each one.</p></li>
+      <li><p><strong>Plug in and upload.</strong> In the Arduino IDE, pick the board (Arduino Uno) and its port, then upload <code>frank_light</code>.</p></li>
+      <li><p><strong>Open the Serial Monitor</strong> (magnifying glass, top right) and set it to 9600 baud. Numbers should scroll.</p></li>
+      <li><p><strong>Test it.</strong> Cover the photoresistor with your hand: numbers drop. Shine your phone flashlight on it: numbers climb. For a picture of it, try the Serial Plotter next to it.</p></li>
+      <li><p><strong>Log your readings</strong> in the table below. These go into <code>map()</code> in job 6 so Frank uses the sensor's real range.</p></li>
+      <li><p><strong>Close the Serial Monitor and Plotter</strong> when you're done. Only one program can listen to the Arduino at a time, and in job 6 that will be p5.</p></li>
+    </ol>
+    <h3>Reading log</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Condition</th><th>Reading</th><th>What it's for</th></tr></thead>
+        <tbody>
+          <tr><td>Covered with your hand</td><td>____</td><td>Darkest: Frank at his grumpiest</td></tr>
+          <tr><td>Normal room light</td><td>____</td><td>Where Frank sits most of the time</td></tr>
+          <tr><td>Phone flashlight, close</td><td>____</td><td>Brightest: full sun</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>If something's off</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>You see</th><th>Likely cause</th><th>Try</th></tr></thead>
+        <tbody>
+          <tr><td>Always 0</td><td>No power reaching column 10, or yellow wire not on <code>A0</code></td><td>Check the red wires and the <code>+</code> rail, and the yellow wire's end</td></tr>
+          <tr><td>Always 1023</td><td>The 10k resistor isn't reaching ground</td><td>Check the black jumper from <code>j18</code> to the <code>−</code> rail</td></tr>
+          <tr><td>Numbers jump around randomly</td><td>A loose leg or wire</td><td>Push each part firmly into its hole</td></tr>
+          <tr><td>Darker gives higher numbers</td><td>Photoresistor and resistor swapped sides</td><td>Swap them, or flip the <code>map()</code> later. Both work</td></tr>
+          <tr><td>Serial Monitor shows gibberish</td><td>Baud rate mismatch</td><td>Set the monitor to 9600 to match <code>Serial.begin(9600)</code></td></tr>
+          <tr><td>Upload fails, port is busy</td><td>Something else is using the port</td><td>Close the Serial Monitor or any other sketch, then upload again</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="say">
+    <header>
+      <div class="num">8 · IN CLASS</div>
+      <h2>Things you can say about him</h2>
+    </header>
+    <ul class="talk">
+      <li>Frank is a class. <code>frank.js</code> describes him, and <code>sketch.js</code> makes one with <code>new</code> and asks him to update and draw himself every frame.</li>
+      <li>His mood is one number, <code>anger</code>, from 1 to -1. His brows, lids, mouth, posture, and blush all read from it.</li>
+      <li>The light sets a target mood, and <code>lerp</code> eases him toward it, so he warms up slowly instead of snapping.</li>
+      <li>He's drawn around a point between his feet, in fractions of his size, so moving or resizing him only takes changing a couple of numbers.</li>
+      <li>His look carries over from my Frank &amp; Frazzle sketch, which I built exploring with Claude. This week's work is pulling him out into his own class and giving him a sensor to react to.</li>
+    </ul>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+<script>
+const show = { legs: true, spikes: true, hair: true, body: true, belly: true, scales: true, face: true, frame: false };
+let frank, lightEl, readoutEl;
+
+class Frank {
+  constructor(x, y) {
+    this.x = x; this.y = y; this.size = 120;
+    this.anger = 0.27;
+    this.breath = 0;
+    this.blinker = new Blinker(2500, 6000);
+    this.lookX = 0; this.lookY = 0;
+    this.bodyColor = color(190, 60, 55);
+    this.darkColor = color(120, 30, 30);
+    this.lidColor = color(160, 45, 42);
+    this.lipColor = color(140, 35, 45);
+    this.bellyColor = color(215, 115, 90);
+    this.bodyPts = [[0.08,0],[0.4,-0.08],[0.5,-0.3],[0.48,-0.56],[0.41,-0.8],[0.25,-1.0],[0.0,-1.09],[-0.26,-1.02],[-0.42,-0.78],[-0.45,-0.44],[-0.37,-0.12],[-0.17,-0.01]];
+    this.spikes = [[-0.08,-1.08,0.07],[-0.18,-1.05,0.09],[-0.28,-1.0,0.09],[-0.38,-0.86,0.08],[-0.43,-0.72,0.07],[-0.45,-0.52,0.05]];
+    this.hairRoot = [0.15, -1.01];
+    this.hair = [[-0.07,-0.7,0.14,0.5],[-0.04,-0.3,0.2,-0.6],[-0.01,-0.05,0.24,0.7],[0.02,0.25,0.18,-0.5],[0.05,0.6,0.16,0.6],[0.08,0.95,0.11,-0.4],[0.0,0.45,0.13,0.8]];
+    this.scales = [];
+    for (let row = 0; row < 16; row++) {
+      let y = -1.12 + row * 0.065; let offset = (row % 2) * 0.045;
+      for (let x = -0.55 + offset; x < 0.35; x += 0.09) {
+        let onFace = dist(x, y, 0.17, -0.72) < 0.28;
+        let onBelly = dist(x, y, 0.25, -0.28) < 0.26;
+        if (!onFace && !onBelly) this.scales.push([x, y]);
+      }
+    }
+  }
+  update(light) {
+    let targetAnger = map(light, 0, 1023, 0.8, -1);
+    this.anger = lerp(this.anger, targetAnger, 0.03);
+    this.blinker.update();
+    this.breath = sin(millis() * 0.0018);
+    let goalX, goalY;
+    if (this.anger < -0.4) { goalX = 0.6; goalY = -1; }
+    else {
+      let headY = this.y - this.size;
+      goalX = constrain((mouseX - this.x) / 160, -1, 1);
+      goalY = constrain((mouseY - headY) / 160, -1, 1);
+    }
+    this.lookX = lerp(this.lookX, goalX, 0.12);
+    this.lookY = lerp(this.lookY, goalY, 0.12);
+    return targetAnger;
+  }
+  display() {
+    let s = this.size, legH = s * 0.18, bottom = -legH;
+    push(); translate(this.x, this.y);
+    noStroke(); fill(0, 0, 0, 45); ellipse(s * 0.03, 0, s * 0.8, s * 0.1);
+    if (show.legs) this.drawLegs(s, legH);
+    let bliss = max(0, -this.anger);
+    push(); translate(0, bottom); rotate(-0.12 * bliss);
+    scale(1 - 0.012 * this.breath, 1 + 0.022 * this.breath); translate(0, -bottom);
+    if (show.spikes) this.drawSpikes(s, bottom);
+    if (show.hair) this.drawHair(s, bottom);
+    if (show.body) { noStroke(); fill(this.bodyColor); this.bodyOutline(s, bottom); }
+    push();
+    if (show.body) { beginClip(); this.bodyOutline(s, bottom); endClip(); }
+    if (show.belly) this.drawBelly(s, bottom);
+    if (show.scales) this.drawScales(s, bottom);
+    if (show.face) this.drawFace(s, bottom);
+    pop(); pop(); pop();
+  }
+  bodyOutline(s, bottom) {
+    let pts = this.bodyPts; beginShape();
+    for (let i = -1; i <= pts.length + 1; i++) { let [x, y] = pts[(i + pts.length) % pts.length]; curveVertex(x * s, bottom + y * s); }
+    endShape();
+  }
+  drawLegs(s, legH) {
+    let legW = s * 0.11;
+    let legs = [[-s * 0.1, lerpColor(this.darkColor, color(0), 0.25)], [s * 0.17, this.darkColor]];
+    for (let [lx, c] of legs) {
+      let hipY = -legH - s * 0.06, ankleY = -s * 0.04;
+      stroke(c); strokeWeight(legW); line(lx, hipY, lx, ankleY);
+      noStroke(); fill(c); ellipse(lx + legW * 0.4, ankleY + s * 0.005, legW * 2, s * 0.07);
+      fill(240, 230, 210); let toeX = lx + legW * 1.3;
+      for (let cy of [-s * 0.055, -s * 0.02]) triangle(toeX - s * 0.02, cy - s * 0.015, toeX - s * 0.02, cy + s * 0.015, toeX + s * 0.03, cy + s * 0.01);
+    }
+  }
+  drawSpikes(s, bottom) {
+    noStroke(); fill(this.darkColor);
+    for (let [x, y, len] of this.spikes) {
+      let n = createVector(x, y + 0.55).normalize();
+      let side = createVector(-n.y, n.x).mult(0.045);
+      let base = createVector(x, y).sub(n.copy().mult(0.04));
+      let tip = createVector(x, y).add(n.copy().mult(len));
+      triangle((base.x + side.x) * s, bottom + (base.y + side.y) * s, (base.x - side.x) * s, bottom + (base.y - side.y) * s, tip.x * s, bottom + tip.y * s);
+    }
+  }
+  drawHair(s, bottom) {
+    stroke(this.darkColor); strokeWeight(s * 0.035); noFill();
+    let [hx, hy] = this.hairRoot; let i = 0;
+    for (let [rootX, lean, len, curl] of this.hair) {
+      lean += 0.06 * sin(millis() * 0.002 + i); i++;
+      let x1 = (hx + rootX) * s, y1 = bottom + hy * s;
+      let x4 = x1 + sin(lean) * len * s, y4 = y1 - cos(lean) * len * s;
+      let x2 = x1 + sin(lean) * len * s * 0.5, y2 = y1 - cos(lean) * len * s * 0.5;
+      let x3 = x4 + cos(lean) * curl * len * s, y3 = y4 + sin(lean) * curl * len * s;
+      bezier(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+  }
+  drawBelly(s, bottom) {
+    let cx = s * 0.25, cy = bottom - s * 0.28, w = s * 0.46, h = s * 0.44;
+    noStroke(); fill(this.bellyColor); ellipse(cx, cy, w, h);
+    stroke(this.darkColor); strokeWeight(s * 0.012); noFill();
+    for (let k of [-0.1, 0, 0.1]) { let plateW = w * sqrt(1 - sq(k / (h / s / 2))) * 0.9; arc(cx, cy + k * s, plateW, s * 0.08, 0, PI); }
+  }
+  drawScales(s, bottom) {
+    stroke(red(this.darkColor), green(this.darkColor), blue(this.darkColor), 140); strokeWeight(s * 0.012); noFill();
+    for (let [x, y] of this.scales) arc(x * s, bottom + y * s, s * 0.09, s * 0.08, 0, PI);
+  }
+  drawFace(s, bottom) {
+    this.drawEye(s * 0.03, bottom - s * 0.8, s * 0.19, s * 0.19, 1, s);
+    this.drawEye(s * 0.24, bottom - s * 0.8, s * 0.12, s * 0.16, -1, s);
+    this.drawMouth(s * 0.18, bottom - s * 0.6, s * 0.3, s);
+    let blush = max(0, -this.anger);
+    if (blush > 0.01) { noStroke(); fill(255, 160, 170, 90 * blush); ellipse(-s * 0.02, bottom - s * 0.66, s * 0.14, s * 0.07); ellipse(s * 0.32, bottom - s * 0.67, s * 0.08, s * 0.06); }
+  }
+  drawEye(cx, cy, w, h, inward, s) {
+    noStroke(); fill(255); ellipse(cx, cy, w, h);
+    fill(30); ellipse(cx + w * (0.05 + 0.2 * this.lookX), cy + h * (0.12 + 0.15 * this.lookY), w * 0.42, h * 0.42);
+    let bliss = max(0, -this.anger);
+    let start = inward > 0 ? PI + 0.35 : PI - 0.15;
+    let stop = inward > 0 ? TWO_PI + 0.15 : TWO_PI - 0.35;
+    start = lerp(start, PI + 0.6, bliss); stop = lerp(stop, TWO_PI - 0.6, bliss);
+    fill(this.lidColor); stroke(this.darkColor); strokeWeight(s * 0.015); arc(cx, cy, w, h, start, stop, CHORD);
+    let b = this.blinker.amount();
+    if (b > 0) { let k = lerp(-0.25, HALF_PI, b); arc(cx, cy, w, h, PI - k, TWO_PI + k, CHORD); }
+    let a = this.anger; strokeWeight(s * 0.05);
+    line(cx - inward * w * 0.55, cy - h * (0.8 + 0.1 * a), cx + inward * w * 0.45, cy - h * (0.5 - 0.15 * a));
+  }
+  drawMouth(cx, mouthY, w, s) {
+    let annoyed = max(0, this.anger), bliss = max(0, -this.anger);
+    let cornerY = mouthY + s * (0.05 + 0.03 * annoyed - 0.08 * bliss);
+    let peakY = mouthY - s * (0.04 + 0.015 * annoyed - 0.06 * bliss);
+    push(); translate(cx, 0); noStroke(); fill(this.lipColor);
+    beginShape(); vertex(-w / 2, cornerY);
+    bezierVertex(-w * 0.2, peakY - s * 0.1, w * 0.2, peakY - s * 0.1, w / 2, cornerY);
+    bezierVertex(w * 0.2, peakY, -w * 0.2, peakY, -w / 2, cornerY); endShape(CLOSE);
+    beginShape(); vertex(-w / 2, cornerY);
+    bezierVertex(-w * 0.2, peakY, w * 0.2, peakY, w / 2, cornerY);
+    bezierVertex(w * 0.2, peakY + s * 0.13, -w * 0.2, peakY + s * 0.13, -w / 2, cornerY); endShape(CLOSE);
+    let lipLineY = (x) => { let lo = 0, hi = 1; for (let i = 0; i < 20; i++) { let mid = (lo + hi) / 2; if (bezierPoint(-w / 2, -w * 0.2, w * 0.2, w / 2, mid) < x) lo = mid; else hi = mid; } return bezierPoint(cornerY, peakY, peakY, cornerY, lo); };
+    let toothX = w * 0.18, tw = s * 0.075, th = s * 0.1, leftX = toothX - tw / 2, rightX = toothX + tw / 2;
+    fill(250, 245, 225); triangle(leftX, lipLineY(leftX), rightX, lipLineY(rightX), toothX, lipLineY(toothX) - th);
+    stroke(80, 15, 25); strokeWeight(s * 0.02); noFill(); bezier(-w / 2, cornerY, -w * 0.2, peakY, w * 0.2, peakY, w / 2, cornerY);
+    pop();
+  }
+}
+class Blinker {
+  constructor(minGap, maxGap) { this.minGap = minGap; this.maxGap = maxGap; this.duration = 160; this.startedAt = -1000; this.nextAt = millis() + random(minGap, maxGap); }
+  update() { if (millis() > this.nextAt) { this.startedAt = millis(); if (random() < 0.2) this.nextAt = millis() + 260; else this.nextAt = millis() + random(this.minGap, this.maxGap); } }
+  amount() { let t = (millis() - this.startedAt) / this.duration; if (t < 0 || t > 1) return 0; return sin(t * PI); }
+}
+
+function setup() {
+  let c = createCanvas(400, 400);
+  c.parent("stage");
+  frank = new Frank(190, 360);
+  lightEl = document.getElementById("light");
+  readoutEl = document.getElementById("readout");
+  for (let key of Object.keys(show)) {
+    let box = document.getElementById("t-" + key);
+    box.addEventListener("change", () => { show[key] = box.checked; });
+    show[key] = box.checked;
+  }
+}
+
+function draw() {
+  background(255);
+  let light = Number(lightEl.value);
+  noStroke();
+  fill(250, 199, 117, map(light, 0, 1023, 10, 200));
+  quad(260, 0, 400, 0, 275, 360, 85, 360);
+  let target = frank.update(light);
+  frank.display();
+  if (show.frame) drawFrame();
+  readoutEl.textContent = "light " + light + " · target anger " + target.toFixed(2) + " · anger " + frank.anger.toFixed(2);
+}
+
+function drawFrame() {
+  let s = frank.size, bottom = frank.y - s * 0.18;
+  push();
+  stroke(40, 110, 200); strokeWeight(1); drawingContext.setLineDash([4, 4]);
+  line(20, bottom, 380, bottom);
+  line(20, bottom - s, 380, bottom - s);
+  drawingContext.setLineDash([]);
+  strokeWeight(1.5);
+  line(frank.x - 10, frank.y, frank.x + 10, frank.y);
+  line(frank.x, frank.y - 10, frank.x, frank.y + 10);
+  noStroke(); fill(40, 110, 200); textFont("monospace"); textSize(11);
+  text("(0, 0) after translate", frank.x + 14, frank.y + 14);
+  text("bottom", 22, bottom - 5);
+  text("bottom - s  (one Frank up)", 22, bottom - s - 5);
+  pop();
+}
+</script>
+
+</body>
+</html>
