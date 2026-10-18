@@ -15,6 +15,10 @@ Study guide with a live Frank: Frank's Field Guide (Claude artifact).
 > gives every Frank. The only things the sketch hands him are 190 and 360, which say
 > where he stands. ("Properties" is the word for his attributes.)
 
+My understanding now: he's the same Frank the recipe describes, just with a new position.
+
+> Confirmed.
+
 **Sunbeam.** Same idea as Frank: `Sunbeam` is the class, `sun` is the one sunbeam.
 
 > Clarified: the `Sunbeam` class is at the bottom of `sketch.js`, not in `frank.js`.

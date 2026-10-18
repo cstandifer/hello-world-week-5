@@ -65,8 +65,15 @@ class Frank {
     }
   }
 
-  // LOGIC: changes the numbers, once every frame
-  update() {
+  // LOGIC: changes the numbers, once every frame.
+  // light comes from sketch.js: 0 = dark, 1023 = full sun
+  update(light) {
+    // dark (0) makes him annoyed, full sun (1023) makes him content
+    let targetAnger = map(light, 0, 1023, 0.8, -1);
+
+    // ease toward that a little every frame, so his mood shifts gradually
+    this.anger = lerp(this.anger, targetAnger, 0.03);
+
     this.blinker.update();
 
     // slow, heavy breathing (one breath about every 3.5 seconds)

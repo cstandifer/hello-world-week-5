@@ -18,7 +18,7 @@ function draw() {
   sun.strength = lightSlider.value();
   sun.display();
 
-  frank.update();
+  frank.update(sun.strength);
   frank.display();
 }
 
