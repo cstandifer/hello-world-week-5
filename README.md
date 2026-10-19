@@ -14,6 +14,8 @@ I'll admit I got a little carried away. When this assignment came out, I built F
 
 It was fun to make, but it grew well past what I could explain line by line, and the point of this week is understanding classes. So for class I reined it in. I took Frank out of his environment, put him on a plain white background, and gave him one simple thing to respond to: light. He keeps his look from the forest version, and the new work here is his class, his mood logic, and connecting him to a real light sensor.
 
+Frank also lives on my website, **[caitlinstandifer.com](https://www.caitlinstandifer.com)**. He wanders into the corner of the homepage, where you can poke him or rest your cursor on him for a hug, and he's the one who greets you on my 404 page. He checked the whole cave and couldn't find the page either, and he's not thrilled about being asked.
+
 ## How to play
 
 | | How |
