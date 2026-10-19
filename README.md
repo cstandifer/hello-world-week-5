@@ -6,7 +6,7 @@ A virtual creature for Interaction Logic, week 5.
 
 Frank is a grumpy little monster who really just wants some sun. He stands in a beam of light, and the stronger the light, the better his mood. In the dark his brows drop and he frowns. Bring him the light and he slowly comes around: his lids lift, he smiles, leans back, blushes a little, and gazes up at the sun.
 
-**[Play with Frank](https://cstandifer.github.io/hello-world-week-5/)** · **[Frank's Field Guide](https://cstandifer.github.io/hello-world-week-5/field-guide.html)**
+**[Play with Frank](https://cstandifer.github.io/hello-world-week-5/)** · **[frank-sees-the-light in the p5 editor](https://editor.p5js.org/cstandifer/sketches/wrgvZmocd)** · **[Frank's Field Guide](https://cstandifer.github.io/hello-world-week-5/field-guide.html)**
 
 ## How Frank got here
 
