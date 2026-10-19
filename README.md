@@ -1,4 +1,4 @@
-# frank-sees-the-light
+# Frank
 
 A virtual creature for Interaction Logic, week 5.
 
