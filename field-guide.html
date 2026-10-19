@@ -242,8 +242,8 @@ html { scroll-behavior: smooth; }
     <div class="step done"><b>JOB 1 · DONE</b><span>Frank on white</span></div>
     <div class="step done"><b>JOB 2 · DONE</b><span>The sunbeam</span></div>
     <div class="step done"><b>JOB 3 · DONE</b><span>Mood follows light</span></div>
-    <div class="step now"><b>JOB 4 · NEXT</b><span>Wire the photoresistor</span></div>
-    <div class="step"><b>JOB 5</b><span>p5 hears the Arduino</span></div>
+    <div class="step done"><b>JOB 4 · DONE</b><span>Wire the photoresistor</span></div>
+    <div class="step now"><b>JOB 5 · NEXT</b><span>p5 hears the Arduino</span></div>
     <div class="step"><b>JOB 6</b><span>README</span></div>
   </div>
 
@@ -685,12 +685,17 @@ endClip();</pre>
       <table>
         <thead><tr><th>Condition</th><th>Reading</th><th>What it's for</th></tr></thead>
         <tbody>
-          <tr><td>Covered with your hand</td><td>____</td><td>Darkest: Frank at his grumpiest</td></tr>
-          <tr><td>Normal room light</td><td>____</td><td>Where Frank sits most of the time</td></tr>
-          <tr><td>Phone flashlight, close</td><td>____</td><td>Brightest: full sun</td></tr>
+          <tr><td>Covered with your finger</td><td>under 100</td><td>Darkest: Frank at his grumpiest</td></tr>
+          <tr><td>Normal room light</td><td>300s</td><td>Where Frank sits most of the time</td></tr>
+          <tr><td>Phone flashlight, right up close</td><td>over 800</td><td>Brightest: full sun</td></tr>
         </tbody>
       </table>
     </div>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>In the lab: the room reads in the 300s, covering it with my finger drops it under 100, and getting right up to it with my phone light takes it over 800.</p>
+        <p class="clar"><span>Clarified</span> So the sensor really lives between about 100 and 800, not 0 and 1023, which answers my question from job 3. In job 5 those become the numbers in <code>map()</code>. With them, room light lands Frank at mildly put out, so he needs you to bring him the light to be happy.</p>
+    </aside>
     <h3>If something's off</h3>
     <div class="table-scroll">
       <table>
