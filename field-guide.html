@@ -244,8 +244,8 @@ html { scroll-behavior: smooth; }
     <div class="step done"><b>JOB 2 · DONE</b><span>The sunbeam</span></div>
     <div class="step done"><b>JOB 3 · DONE</b><span>Mood follows light</span></div>
     <div class="step done"><b>JOB 4 · DONE</b><span>Wire the photoresistor</span></div>
-    <div class="step now"><b>JOB 5 · NEXT</b><span>p5 hears the Arduino</span></div>
-    <div class="step"><b>JOB 6</b><span>README</span></div>
+    <div class="step done"><b>JOB 5 · DONE</b><span>p5 hears the Arduino</span></div>
+    <div class="step now"><b>JOB 6 · NEXT</b><span>README</span></div>
   </div>
 
   <section id="files">
@@ -789,7 +789,7 @@ endClip();</pre>
     </div>
     <aside class="mynote">
         <div class="mylabel">My note</div>
-        <p>Two errors on the way. First, <code>port</code> was undefined because the three new lines were missing from <code>setup()</code>, so <code>draw()</code> asked an empty variable if it was open. Then connecting failed with "Failed to open serial port" until I closed the Serial Monitor tab in the Arduino IDE.</p>
+        <p>Two errors on the way. First, <code>port</code> was undefined because the three new lines were missing from <code>setup()</code>, so <code>draw()</code> asked an empty variable if it was open. Then connecting failed with "Failed to open serial port" until I closed the Serial Monitor tab in the Arduino IDE. Once connected, Frank sulks when I cover the sensor and perks up when I shine my light on him. He's so cute.</p>
         <p class="clar"><span>Clarified</span> Only one program can listen to the Arduino at a time. The board keeps running its code without the IDE open, so the IDE can be closed while p5 listens. To upload new Arduino code later, disconnect p5 first.</p>
     </aside>
   </section>
