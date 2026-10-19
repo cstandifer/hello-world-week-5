@@ -206,14 +206,14 @@ html { scroll-behavior: smooth; }
     <a href="#job3">Job 3</a>
     <a href="#job4">Job 4 · Lab</a>
     <a href="#job5">Job 5 · Serial</a>
-    <a href="#say">8 In class</a>
+    <a href="#summary">In summary</a>
   </nav>
 
   <div class="hero" id="specimen">
     <div class="hero-text">
       <div class="eyebrow">hello-world-week-5 · field guide</div>
       <h1>How Frank works</h1>
-      <p class="lede">A study guide for <code>frank.js</code>: what every part does, in plain words, so you can explain him in class without memorizing the math.</p>
+      <p class="lede">A study guide that breaks Frank's code down part by part, in plain words, so I could understand what I built and not just watch it work.</p>
       <p>The Frank on the right runs the real code from your sketch. Drag the light to change his mood. Switch off a body part to see which method draws it. Turn on <em>his frame</em> to see the point everything is measured from.</p>
       <p class="muted">The dashed boxes marked <em>My note</em> are mine, written as I worked through this, with a clarification underneath when I had something slightly off.</p>
     </div>
@@ -794,17 +794,18 @@ endClip();</pre>
     </aside>
   </section>
 
-  <section id="say">
+  <section id="summary">
     <header>
-      <div class="num">8 · IN CLASS</div>
-      <h2>Things you can say about him</h2>
+      <div class="num">IN SUMMARY</div>
+      <h2>Frank in a few sentences</h2>
     </header>
     <ul class="talk">
       <li>Frank is a class. <code>frank.js</code> describes him, and <code>sketch.js</code> makes one with <code>new</code> and asks him to update and draw himself every frame.</li>
       <li>His mood is one number, <code>anger</code>, from 1 to -1. His brows, lids, mouth, posture, and blush all read from it.</li>
-      <li>The light sets a target mood, and <code>lerp</code> eases him toward it, so he warms up slowly instead of snapping.</li>
+      <li>The light sets a target mood with <code>map()</code>, and <code>lerp()</code> eases him toward it, so he warms up slowly instead of snapping.</li>
+      <li>The light comes from a photoresistor on an Arduino, sent to p5 over serial. Without an Arduino, a slider stands in for it.</li>
       <li>He's drawn around a point between his feet, in fractions of his size, so moving or resizing him only takes changing a couple of numbers.</li>
-      <li>His look carries over from my Frank &amp; Frazzle sketch, which I built exploring with Claude. This week's work is pulling him out into his own class and giving him a sensor to react to.</li>
+      <li>His look carries over from my Frank &amp; Frazzle sketch, which I built exploring with Claude. The new work here is pulling him out into his own class and giving him a real sensor to react to.</li>
     </ul>
   </section>
 </div>
