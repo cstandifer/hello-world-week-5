@@ -66,10 +66,10 @@ class Frank {
   }
 
   // LOGIC: changes the numbers, once every frame.
-  // light comes from sketch.js: 0 = dark, 1023 = full sun
+  // light comes from sketch.js: 100 = dark, 800 = full sun
   update(light) {
-    // dark (0) makes him annoyed, full sun (1023) makes him content
-    let targetAnger = map(light, 0, 1023, 0.8, -1);
+    // dark (100) makes him annoyed, full sun (800) makes him content
+    let targetAnger = map(light, 100, 800, 0.8, -1, true);
 
     // ease toward that a little every frame, so his mood shifts gradually
     this.anger = lerp(this.anger, targetAnger, 0.03);
