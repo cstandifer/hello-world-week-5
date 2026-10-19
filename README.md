@@ -59,15 +59,3 @@ Serial in p5 uses the [p5.webserial](https://github.com/gohai/p5.webserial) libr
 I used Claude as a partner on this one, mostly to help me understand what I was building. Since Frank's look came out of a pretty ambitious first version, I wanted to be able to explain the code I was turning in, not just have it work. Claude helped me break down the code, explained what each change I was typing actually did, and walked me through connecting a p5 sketch to an Arduino over serial. I typed the new pieces in myself, step by step.
 
 **[Frank's Field Guide](https://cstandifer.github.io/hello-world-week-5/field-guide.html)** came out of that. It has a live Frank you can take apart, explanations of each part of the code, and my own notes and questions along the way.
-
-### Prompts that mattered
-
-> Let's move the Frank and Frazzle thing to its own repository and work on either Frank or Frazzle outside of their forest environment. I'd love to bring in the Arduino somehow. But it needs to be code that doesn't go beyond the basics I've been exploring so far. I need to be able to explain and understand what I'm doing.
-
-> We are taking Frank out of his environment to a white background. The sunbeam won't move. Let's drop the mushroom for now. I think the photoresistor is enough.
-
-> Do we need the slider? That's not a function I know, unless this is a basic thing I can pull from the references page on the p5.js site.
-
-> I want to keep his look, but I need detailed help to understand how this works.
-
-> I don't think we need trust for this. It's a little too complicated.
