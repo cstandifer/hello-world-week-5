@@ -783,9 +783,15 @@ endClip();</pre>
           <tr><td>"Failed to open serial port"</td><td>The Serial Monitor is still open</td><td>Close it in the Arduino IDE, then click Connect again</td></tr>
           <tr><td>Connected, but Frank doesn't change</td><td>Baud rates don't match</td><td>Both sides should say 9600</td></tr>
           <tr><td><code>createSerial is not defined</code></td><td>The library line is missing or below <code>sketch.js</code></td><td>Put it right after the p5 line in <code>index.html</code></td></tr>
+          <tr><td><code>Cannot read properties of undefined (reading 'opened')</code></td><td><code>port</code> was never filled in</td><td>Make sure <code>port = createSerial();</code> is inside <code>setup()</code>, with no <code>let</code> in front</td></tr>
         </tbody>
       </table>
     </div>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>Two errors on the way. First, <code>port</code> was undefined because the three new lines were missing from <code>setup()</code>, so <code>draw()</code> asked an empty variable if it was open. Then connecting failed with "Failed to open serial port" until I closed the Serial Monitor tab in the Arduino IDE.</p>
+        <p class="clar"><span>Clarified</span> Only one program can listen to the Arduino at a time. The board keeps running its code without the IDE open, so the IDE can be closed while p5 listens. To upload new Arduino code later, disconnect p5 first.</p>
+    </aside>
   </section>
 
   <section id="say">
