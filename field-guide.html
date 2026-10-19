@@ -205,6 +205,7 @@ html { scroll-behavior: smooth; }
     <a href="#anger">7 The mood dial</a>
     <a href="#job3">Job 3</a>
     <a href="#job4">Job 4 · Lab</a>
+    <a href="#job5">Job 5 · Serial</a>
     <a href="#say">8 In class</a>
   </nav>
 
@@ -707,6 +708,76 @@ endClip();</pre>
           <tr><td>Darker gives higher numbers</td><td>Photoresistor and resistor swapped sides</td><td>Swap them, or flip the <code>map()</code> later. Both work</td></tr>
           <tr><td>Serial Monitor shows gibberish</td><td>Baud rate mismatch</td><td>Set the monitor to 9600 to match <code>Serial.begin(9600)</code></td></tr>
           <tr><td>Upload fails, port is busy</td><td>Something else is using the port</td><td>Close the Serial Monitor or any other sketch, then upload again</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="job5">
+    <header>
+      <div class="num">JOB 5 · P5 HEARS THE ARDUINO</div>
+      <h2>Swap the slider for the real sensor</h2>
+      <p>The Arduino is already sending one number per line. Job 5 teaches the sketch to listen, using <strong>p5.webserial</strong>, a library on p5's libraries page that works in the web editor in Chrome. If no Arduino is connected, the slider still works, so anyone can play with Frank.</p>
+    </header>
+    <div class="flow">
+      <div class="chip"><strong>photoresistor</strong><span>Light on the sensor</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip"><strong>Arduino</strong><span><code>Serial.println(light)</code></span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip hot"><strong>port.readUntil("\n")</strong><span>p5 reads one line</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="chip"><strong>sun.strength</strong><span>Then Frank, as before</span></div>
+    </div>
+    <h3>The new pieces</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Code</th><th>Where</th><th>In plain words</th></tr></thead>
+        <tbody>
+          <tr><td><code>&lt;script src=".../p5.webserial.js"&gt;</code></td><td><code>index.html</code>, after p5</td><td>Loads the library, the same way p5 itself is loaded</td></tr>
+          <tr><td><code>port = createSerial();</code></td><td><code>setup()</code></td><td>Makes a serial port object. Not connected yet, just ready</td></tr>
+          <tr><td><code>createButton("Connect Arduino")</code></td><td><code>setup()</code></td><td>A button under the canvas. Chrome only lets a page pick a device after you click something</td></tr>
+          <tr><td><code>port.open("Arduino", 9600);</code></td><td><code>connectArduino()</code></td><td>Opens Chrome's device picker. 9600 has to match <code>Serial.begin(9600)</code> on the Arduino</td></tr>
+          <tr><td><code>port.opened()</code></td><td><code>draw()</code></td><td>"Are we connected?" true or false</td></tr>
+          <tr><td><code>port.readUntil("\n")</code></td><td><code>draw()</code></td><td>Reads up to the end of a line, which is one whole number. Returns an empty string if a full line hasn't arrived yet</td></tr>
+          <tr><td><code>int(reading)</code></td><td><code>draw()</code></td><td>Serial sends text, like <code>"345"</code>. <code>int()</code> turns it into the number 345</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two">
+      <div class="note">
+        <h3>The heart of it, in <code>draw()</code></h3>
+        <pre><span class="k">if</span> (port.opened()) {
+  <span class="k">let</span> reading = port.readUntil(<span class="k">"\n"</span>);
+  <span class="k">if</span> (reading.length > 0) {
+    sun.strength = int(reading);
+  }
+} <span class="k">else</span> {
+  sun.strength = lightSlider.value();
+}</pre>
+        <p>Connected: use the sensor, but only when a full number has arrived, so the sun never gets an empty value. Not connected: use the slider, like before.</p>
+      </div>
+      <div class="note sun">
+        <h3>Using the lab readings</h3>
+        <pre>map(light, 100, 800, 0.8, -1, <span class="k">true</span>)</pre>
+        <p>Every 0 and 1023 becomes 100 and 800, the sensor's real range: in Frank's mood, the sunbeam's alpha, and the slider. The extra <code>true</code> is on the <code>map()</code> reference: it keeps the answer inside the range, so a reading of 50 or 900 can't push Frank past fully grumpy or fully content.</p>
+      </div>
+    </div>
+    <h3>Connecting, step by step</h3>
+    <ol class="checklist">
+      <li><p><strong>Close the Arduino Serial Monitor and Plotter.</strong> Only one program can listen at a time.</p></li>
+      <li><p><strong>Use Chrome</strong> (or Edge). Safari and Firefox don't support Web Serial.</p></li>
+      <li><p><strong>Press play</strong>, then click <strong>Connect Arduino</strong> under the canvas.</p></li>
+      <li><p><strong>Pick the Arduino</strong> in Chrome's pop-up (it usually says Arduino Uno, or usbmodem on a Mac) and click Connect.</p></li>
+      <li><p><strong>Cover the sensor, then shine a light on it.</strong> Frank should sulk, then come around.</p></li>
+    </ol>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>You see</th><th>Likely cause</th><th>Try</th></tr></thead>
+        <tbody>
+          <tr><td>The pop-up lists nothing</td><td>Arduino isn't plugged in, or the filter hides it</td><td>Replug the USB. Or change <code>port.open("Arduino", 9600)</code> to <code>port.open(9600)</code> to list every device</td></tr>
+          <tr><td>"Failed to open serial port"</td><td>The Serial Monitor is still open</td><td>Close it in the Arduino IDE, then click Connect again</td></tr>
+          <tr><td>Connected, but Frank doesn't change</td><td>Baud rates don't match</td><td>Both sides should say 9600</td></tr>
+          <tr><td><code>createSerial is not defined</code></td><td>The library line is missing or below <code>sketch.js</code></td><td>Put it right after the p5 line in <code>index.html</code></td></tr>
         </tbody>
       </table>
     </div>
