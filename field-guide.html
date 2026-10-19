@@ -756,7 +756,13 @@ endClip();</pre>
 }</pre>
         <p>Connected: use the sensor, but only when a full number has arrived, so the sun never gets an empty value. Not connected: use the slider, like before.</p>
       </div>
-      <div class="note sun">
+    </div>
+    <aside class="mynote">
+        <div class="mylabel">My note</div>
+        <p>I tried adding <code>connectArduino()</code> on my own and pasted it between <code>function draw()</code> and its <code>{</code>, which broke <code>draw()</code>. "After draw()" was confusing: after the line, or after the whole function?</p>
+        <p class="clar"><span>Clarified</span> After the whole function. Every function is its name, then <code>{</code>, its code, then <code>}</code>. A new function starts only after the closing <code>}</code> of the one before it, never inside it.</p>
+    </aside>
+    <div class="note sun">
         <h3>Using the lab readings</h3>
         <pre>map(light, 100, 800, 0.8, -1, <span class="k">true</span>)</pre>
         <p>Every 0 and 1023 becomes 100 and 800, the sensor's real range: in Frank's mood, the sunbeam's alpha, and the slider. The extra <code>true</code> is on the <code>map()</code> reference: it keeps the answer inside the range, so a reading of 50 or 900 can't push Frank past fully grumpy or fully content.</p>
